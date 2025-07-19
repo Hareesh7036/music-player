@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat } from 'lucide-react';
+import { useLikedSongs } from '../hooks/useLikedSongs';
 
 interface Song {
   _id: string;
@@ -27,7 +28,11 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
   const [volume, setVolume] = useState(1);
   const [isShuffle, setIsShuffle] = useState(false);
   const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
+  const [likingState, setLikingState] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  
+  // Like functionality
+  const { toggleLike, isLiked } = useLikedSongs();
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -80,6 +85,26 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const handleLikeToggle = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+    
+    if (!currentSong) return;
+    
+    setLikingState(true);
+    
+    try {
+      const result = await toggleLike(currentSong._id);
+      if (!result.success) {
+        console.error('Failed to toggle like:', result.error);
+        // You could add a toast notification here
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      setLikingState(false);
+    }
+  };
+
   const progress = currentSong ? (currentTime / currentSong.duration) * 100 : 0;
 
   if (!currentSong) {
@@ -118,8 +143,19 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
             <h3 className="font-semibold truncate">{currentSong.title}</h3>
             <p className="text-gray-400 text-sm truncate">{currentSong.artist}</p>
           </div>
-          <button className="text-gray-400 hover:text-white transition-colors">
-            <Heart size={20} />
+          <button 
+            onClick={handleLikeToggle}
+            disabled={likingState}
+            className={`transition-colors ${
+              currentSong && isLiked(currentSong._id) 
+                ? 'text-red-500 hover:text-red-400' 
+                : 'text-gray-400 hover:text-white'
+            } ${likingState ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            <Heart 
+              size={20} 
+              fill={currentSong && isLiked(currentSong._id) ? 'currentColor' : 'none'}
+            />
           </button>
         </div>
 

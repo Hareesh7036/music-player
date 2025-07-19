@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useUser } from '../contexts/UserContext';
+import { useLikedSongsContext } from '../contexts/LikedSongsContext';
 
 export interface LikedSongsState {
   likedSongIds: string[];
@@ -9,41 +10,14 @@ export interface LikedSongsState {
 
 export const useLikedSongs = () => {
   const { userId } = useUser();
-  const [state, setState] = useState<LikedSongsState>({
-    likedSongIds: [],
-    isLoading: true,
+  const { likedSongIds, refreshLikedSongs } = useLikedSongsContext();
+  
+  // For backward compatibility
+  const state = {
+    likedSongIds,
+    isLoading: false,
     error: null
-  });
-
-  // Fetch liked song IDs for the user
-  const fetchLikedSongs = useCallback(async () => {
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      const response = await fetch(`http://localhost:8000/api/likes/ids/${userId}`);
-      const result = await response.json();
-      
-      if (result.success) {
-        setState(prev => ({
-          ...prev,
-          likedSongIds: result.data || [],
-          isLoading: false
-        }));
-      } else {
-        setState(prev => ({
-          ...prev,
-          error: result.error || 'Failed to fetch liked songs',
-          isLoading: false
-        }));
-      }
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        isLoading: false
-      }));
-    }
-  }, [userId]);
+  };
 
   // Toggle like status for a song
   const toggleLike = useCallback(async (songId: string) => {
@@ -59,16 +33,9 @@ export const useLikedSongs = () => {
       const result = await response.json();
       
       if (result.success) {
-        const isLiked = result.data.isLiked;
-        
-        setState(prev => ({
-          ...prev,
-          likedSongIds: isLiked 
-            ? [...prev.likedSongIds, songId]
-            : prev.likedSongIds.filter(id => id !== songId)
-        }));
-        
-        return { success: true, isLiked, message: result.data.message };
+        // Refresh the liked songs list from the server
+        await refreshLikedSongs();
+        return { success: true, isLiked: result.data.isLiked, message: result.data.message };
       } else {
         return { success: false, error: result.error };
       }
@@ -76,12 +43,12 @@ export const useLikedSongs = () => {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       return { success: false, error: errorMessage };
     }
-  }, [userId]);
+  }, [userId, refreshLikedSongs]);
 
   // Check if a song is liked
   const isLiked = useCallback((songId: string) => {
-    return state.likedSongIds.includes(songId);
-  }, [state.likedSongIds]);
+    return likedSongIds.includes(songId);
+  }, [likedSongIds]);
 
   // Get all liked songs with full details
   const getLikedSongs = useCallback(async () => {
@@ -100,18 +67,13 @@ export const useLikedSongs = () => {
     }
   }, [userId]);
 
-  // Load liked songs on mount
-  useEffect(() => {
-    fetchLikedSongs();
-  }, [fetchLikedSongs]);
-
   return {
-    likedSongIds: state.likedSongIds,
+    likedSongIds,
     isLoading: state.isLoading,
     error: state.error,
     toggleLike,
     isLiked,
     getLikedSongs,
-    refetch: fetchLikedSongs
+    refetch: refreshLikedSongs
   };
 };
