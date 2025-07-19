@@ -24,7 +24,7 @@ A modern music player web application built with Next.js, TypeScript, Elysia.js,
 ## Project Structure
 
 ```
-windsurf-project/
+music-player/
 ├── frontend/                 # Next.js frontend application
 │   ├── src/
 │   │   ├── app/             # Next.js app router
@@ -53,18 +53,21 @@ windsurf-project/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
-   cd windsurf-project
+   cd music-player
    ```
 
 2. **Install backend dependencies**
+
    ```bash
    cd backend
    npm install
    ```
 
 3. **Install frontend dependencies**
+
    ```bash
    cd ../frontend
    npm install
@@ -77,17 +80,21 @@ windsurf-project/
 ### Running the Application
 
 1. **Start the backend server**
+
    ```bash
    cd backend
    npm run dev
    ```
+
    The API will be available at `http://localhost:8000`
 
 2. **Start the frontend development server**
+
    ```bash
    cd frontend
    npm run dev
    ```
+
    The application will be available at `http://localhost:3000`
 
 3. **Seed sample data (optional)**
@@ -107,17 +114,20 @@ windsurf-project/
 ## Database Models
 
 ### Song
+
 - title, artist, album, genre
 - duration, filePath, coverImage
 - uploadedBy (User reference)
 - playCount, timestamps
 
 ### User
+
 - username, email, password
 - avatar, playlists, favoritesSongs
 - timestamps
 
 ### Playlist
+
 - name, description, coverImage
 - songs (Song references)
 - owner (User reference)
@@ -126,12 +136,14 @@ windsurf-project/
 ## Development
 
 ### Backend Development
+
 - Built with Elysia.js for high performance
 - TypeScript for type safety
 - Mongoose for MongoDB integration
 - CORS enabled for frontend integration
 
 ### Frontend Development
+
 - Next.js 15 with App Router
 - TypeScript for type safety
 - Tailwind CSS for styling
