@@ -1,8 +1,17 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Heart, Shuffle, Repeat } from 'lucide-react';
-import { useLikedSongs } from '../hooks/useLikedSongs';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  Heart,
+  Shuffle,
+  Repeat,
+} from "lucide-react";
+import { useLikedSongs } from "../hooks/useLikedSongs";
 
 interface Song {
   _id: string;
@@ -22,17 +31,32 @@ interface MusicPlayerProps {
   onSongEnd: () => void;
 }
 
-export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious, onSongEnd }: MusicPlayerProps) {
+export default function MusicPlayer({
+  currentSong,
+  playlist,
+  onNext,
+  onPrevious,
+  onSongEnd,
+}: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isShuffle, setIsShuffle] = useState(false);
-  const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
+  const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
   const [likingState, setLikingState] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
-  
+
   // Like functionality
   const { toggleLike, isLiked } = useLikedSongs();
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+    audio.play();
+    setIsPlaying(true);
+  }, [currentSong]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -44,12 +68,12 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
       onSongEnd();
     };
 
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("ended", handleEnded);
     };
   }, [onSongEnd]);
 
@@ -82,24 +106,24 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleLikeToggle = async (event: React.MouseEvent) => {
     event.stopPropagation();
-    
+
     if (!currentSong) return;
-    
+
     setLikingState(true);
-    
+
     try {
       const result = await toggleLike(currentSong._id);
       if (!result.success) {
-        console.error('Failed to toggle like:', result.error);
+        console.error("Failed to toggle like:", result.error);
         // You could add a toast notification here
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     } finally {
       setLikingState(false);
     }
@@ -124,14 +148,14 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
         src={`http://localhost:8000${currentSong.filePath}`}
         onLoadedData={() => setCurrentTime(0)}
       />
-      
+
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Song Info */}
         <div className="flex items-center space-x-4 flex-1">
           <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
             {currentSong.coverImage ? (
-              <img 
-                src={`http://localhost:8000${currentSong.coverImage}`} 
+              <img
+                src={`http://localhost:8000${currentSong.coverImage}`}
                 alt={currentSong.title}
                 className="w-full h-full object-cover"
               />
@@ -141,20 +165,26 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
           </div>
           <div className="min-w-0">
             <h3 className="font-semibold truncate">{currentSong.title}</h3>
-            <p className="text-gray-400 text-sm truncate">{currentSong.artist}</p>
+            <p className="text-gray-400 text-sm truncate">
+              {currentSong.artist}
+            </p>
           </div>
-          <button 
+          <button
             onClick={handleLikeToggle}
             disabled={likingState}
             className={`transition-colors ${
-              currentSong && isLiked(currentSong._id) 
-                ? 'text-red-500 hover:text-red-400' 
-                : 'text-gray-400 hover:text-white'
-            } ${likingState ? 'opacity-50 cursor-not-allowed' : ''}`}
+              currentSong && isLiked(currentSong._id)
+                ? "text-red-500 hover:text-red-400"
+                : "text-gray-400 hover:text-white"
+            } ${likingState ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            <Heart 
-              size={20} 
-              fill={currentSong && isLiked(currentSong._id) ? 'currentColor' : 'none'}
+            <Heart
+              size={20}
+              fill={
+                currentSong && isLiked(currentSong._id)
+                  ? "currentColor"
+                  : "none"
+              }
             />
           </button>
         </div>
@@ -162,41 +192,57 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
         {/* Player Controls */}
         <div className="flex flex-col items-center space-y-2 flex-2">
           <div className="flex items-center space-x-4">
-            <button 
+            <button
               onClick={() => setIsShuffle(!isShuffle)}
-              className={`transition-colors ${isShuffle ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+              className={`transition-colors ${
+                isShuffle ? "text-green-500" : "text-gray-400 hover:text-white"
+              }`}
             >
               <Shuffle size={20} />
             </button>
-            <button 
+            <button
               onClick={onPrevious}
               className="text-gray-400 hover:text-white transition-colors"
             >
               <SkipBack size={24} />
             </button>
-            <button 
+            <button
               onClick={togglePlay}
               className="bg-white text-black rounded-full p-2 hover:scale-105 transition-transform"
             >
               {isPlaying ? <Pause size={24} /> : <Play size={24} />}
             </button>
-            <button 
+            <button
               onClick={onNext}
               className="text-gray-400 hover:text-white transition-colors"
             >
               <SkipForward size={24} />
             </button>
-            <button 
-              onClick={() => setRepeatMode(repeatMode === 'none' ? 'all' : repeatMode === 'all' ? 'one' : 'none')}
-              className={`transition-colors ${repeatMode !== 'none' ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+            <button
+              onClick={() =>
+                setRepeatMode(
+                  repeatMode === "none"
+                    ? "all"
+                    : repeatMode === "all"
+                    ? "one"
+                    : "none"
+                )
+              }
+              className={`transition-colors ${
+                repeatMode !== "none"
+                  ? "text-green-500"
+                  : "text-gray-400 hover:text-white"
+              }`}
             >
               <Repeat size={20} />
             </button>
           </div>
-          
+
           {/* Progress Bar */}
           <div className="flex items-center space-x-2 w-full max-w-md">
-            <span className="text-xs text-gray-400">{formatTime(currentTime)}</span>
+            <span className="text-xs text-gray-400">
+              {formatTime(currentTime)}
+            </span>
             <input
               type="range"
               min="0"
@@ -205,7 +251,9 @@ export default function MusicPlayer({ currentSong, playlist, onNext, onPrevious,
               onChange={handleSeek}
               className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
             />
-            <span className="text-xs text-gray-400">{formatTime(currentSong.duration)}</span>
+            <span className="text-xs text-gray-400">
+              {formatTime(currentSong.duration)}
+            </span>
           </div>
         </div>
 

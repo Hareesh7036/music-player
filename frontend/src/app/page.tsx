@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Sidebar from '@/components/Sidebar';
-import SongList from '@/components/SongList';
-import MusicPlayer from '@/components/MusicPlayer';
-import LikedSongs from '@/components/LikedSongs';
-import { Search, Upload } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Sidebar from "@/components/Sidebar";
+import SongList from "@/components/SongList";
+import MusicPlayer from "@/components/MusicPlayer";
+import LikedSongs from "@/components/LikedSongs";
+import { Search, Upload } from "lucide-react";
 
 interface Song {
   _id: string;
@@ -24,8 +24,8 @@ export default function Home() {
   const [songs, setSongs] = useState<Song[]>([]);
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [activeView, setActiveView] = useState('home');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeView, setActiveView] = useState("home");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Fetch songs from API
@@ -36,12 +36,12 @@ export default function Home() {
   const fetchSongs = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:8000/api/songs');
+      const response = await axios.get("http://localhost:8000/api/songs");
       if (response.data.success) {
         setSongs(response.data.data);
       }
     } catch (error) {
-      console.error('Failed to fetch songs:', error);
+      console.error("Failed to fetch songs:", error);
     } finally {
       setLoading(false);
     }
@@ -58,28 +58,32 @@ export default function Home() {
     try {
       await axios.patch(`http://localhost:8000/api/songs/${songId}/play`);
       // Update local state
-      setSongs(prevSongs => 
-        prevSongs.map(song => 
-          song._id === songId 
+      setSongs((prevSongs) =>
+        prevSongs.map((song) =>
+          song._id === songId
             ? { ...song, playCount: song.playCount + 1 }
             : song
         )
       );
     } catch (error) {
-      console.error('Failed to increment play count:', error);
+      console.error("Failed to increment play count:", error);
     }
   };
 
   const handleNext = () => {
     if (!currentSong || songs.length === 0) return;
-    const currentIndex = songs.findIndex(song => song._id === currentSong._id);
+    const currentIndex = songs.findIndex(
+      (song) => song._id === currentSong._id
+    );
     const nextIndex = (currentIndex + 1) % songs.length;
     handleSongSelect(songs[nextIndex]);
   };
 
   const handlePrevious = () => {
     if (!currentSong || songs.length === 0) return;
-    const currentIndex = songs.findIndex(song => song._id === currentSong._id);
+    const currentIndex = songs.findIndex(
+      (song) => song._id === currentSong._id
+    );
     const prevIndex = currentIndex === 0 ? songs.length - 1 : currentIndex - 1;
     handleSongSelect(songs[prevIndex]);
   };
@@ -92,15 +96,17 @@ export default function Home() {
     setIsPlaying(!isPlaying);
   };
 
-  const filteredSongs = songs.filter(song =>
-    song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    song.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (song.album && song.album.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredSongs = songs.filter(
+    (song) =>
+      song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      song.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (song.album &&
+        song.album.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const renderContent = () => {
     switch (activeView) {
-      case 'liked':
+      case "liked":
         return (
           <div className="space-y-6">
             <LikedSongs
@@ -111,11 +117,14 @@ export default function Home() {
             />
           </div>
         );
-      case 'search':
+      case "search":
         return (
           <div className="space-y-6">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="Search for songs, artists, or albums..."
@@ -133,7 +142,7 @@ export default function Home() {
             />
           </div>
         );
-      case 'library':
+      case "library":
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">Your Library</h2>
@@ -156,7 +165,7 @@ export default function Home() {
                 <span className="font-medium">Upload Music</span>
               </button>
             </div>
-            
+
             {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-white text-lg">Loading songs...</div>
@@ -179,13 +188,13 @@ export default function Home() {
     <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex">
       {/* Sidebar */}
       <Sidebar activeView={activeView} onViewChange={setActiveView} />
-      
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-6 pb-32 overflow-y-auto">
           {renderContent()}
         </main>
-        
+
         {/* Music Player */}
         <MusicPlayer
           currentSong={currentSong}
