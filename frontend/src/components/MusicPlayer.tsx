@@ -29,6 +29,11 @@ interface MusicPlayerProps {
   onNext: () => void;
   onPrevious: () => void;
   onSongEnd: () => void;
+  isFirstSong: boolean;
+  isLastSong: boolean;
+  repeatMode: 'none' | 'one' | 'all';
+  onRepeatModeChange: (mode: 'none' | 'one' | 'all') => void;
+  onRestartCurrentSong?: () => void;
 }
 
 export default function MusicPlayer({
@@ -37,12 +42,16 @@ export default function MusicPlayer({
   onNext,
   onPrevious,
   onSongEnd,
+  isFirstSong,
+  isLastSong,
+  repeatMode,
+  onRepeatModeChange,
 }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isShuffle, setIsShuffle] = useState(false);
-  const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
+  // Remove the local state for repeatMode as it's now controlled by the parent
   const [likingState, setLikingState] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -64,8 +73,39 @@ export default function MusicPlayer({
 
     const updateTime = () => setCurrentTime(audio.currentTime);
     const handleEnded = () => {
-      setIsPlaying(false);
-      onSongEnd();
+      if (repeatMode === "one") {
+        // For 'one' mode, restart the current song
+        if (audioRef.current && currentSong) {
+          // Ensure the src is set before playing
+          audioRef.current.src = `http://localhost:8000${currentSong.filePath}`;
+          audioRef.current.currentTime = 0;
+          audioRef.current
+            .play()
+            .catch((e) => console.error("Error replaying song:", e));
+        }
+      } else if (repeatMode === "all") {
+        // For 'all' mode, go to the next song or loop back to the first
+        const currentIndex = playlist.findIndex(song => song._id === currentSong?._id);
+        const nextIndex = (currentIndex + 1) % playlist.length;
+        const nextSong = playlist[nextIndex];
+        
+        if (nextSong) {
+          // Use a small timeout to prevent audio glitches
+          setTimeout(() => {
+            // Play the next song directly
+            if (audioRef.current) {
+              audioRef.current.src = `http://localhost:8000${nextSong.filePath}`;
+              audioRef.current.play().catch(e => console.error("Error playing next song:", e));
+              // Update the current song in the parent component
+              onSongEnd();
+            }
+          }, 100);
+        }
+      } else {
+        // For 'none' mode, just stop playing
+        setIsPlaying(false);
+        onSongEnd();
+      }
     };
 
     audio.addEventListener("timeupdate", updateTime);
@@ -201,8 +241,23 @@ export default function MusicPlayer({
               <Shuffle size={20} />
             </button>
             <button
-              onClick={onPrevious}
-              className="text-gray-400 hover:text-white transition-colors"
+              onClick={(e) => {
+                if (repeatMode === 'one' && audioRef.current) {
+                  e.preventDefault();
+                  audioRef.current.currentTime = 0;
+                  // Always play from start in repeat one mode
+                  audioRef.current.play()
+                    .then(() => setIsPlaying(true))
+                    .catch(e => console.error("Error replaying song:", e));
+                } else {
+                  onPrevious();
+                }
+              }}
+              disabled={isFirstSong && repeatMode !== 'one'}
+              className={`transition-colors ${
+                isFirstSong && repeatMode !== 'one' ? "text-gray-600" : "text-gray-400 hover:text-white"
+              }`}
+              aria-label={repeatMode === 'one' ? "Restart song" : "Previous song"}
             >
               <SkipBack size={24} />
             </button>
@@ -213,14 +268,29 @@ export default function MusicPlayer({
               {isPlaying ? <Pause size={24} /> : <Play size={24} />}
             </button>
             <button
-              onClick={onNext}
-              className="text-gray-400 hover:text-white transition-colors"
+              onClick={(e) => {
+                if (repeatMode === 'one' && audioRef.current) {
+                  e.preventDefault();
+                  audioRef.current.currentTime = 0;
+                  // Always play from start in repeat one mode
+                  audioRef.current.play()
+                    .then(() => setIsPlaying(true))
+                    .catch(e => console.error("Error replaying song:", e));
+                } else {
+                  onNext();
+                }
+              }}
+              disabled={isLastSong && repeatMode === 'none'}
+              className={`transition-colors ${
+                isLastSong && repeatMode === 'none' ? "text-gray-600" : "text-gray-400 hover:text-white"
+              }`}
+              aria-label={repeatMode === 'one' ? "Restart song" : "Next song"}
             >
               <SkipForward size={24} />
             </button>
             <button
               onClick={() =>
-                setRepeatMode(
+                onRepeatModeChange(
                   repeatMode === "none"
                     ? "all"
                     : repeatMode === "all"
@@ -233,8 +303,28 @@ export default function MusicPlayer({
                   ? "text-green-500"
                   : "text-gray-400 hover:text-white"
               }`}
+              title={
+                repeatMode === "one"
+                  ? "Repeat One"
+                  : repeatMode === "all"
+                  ? "Repeat All"
+                  : "Repeat Off"
+              }
             >
-              <Repeat size={20} />
+              {repeatMode === "one" ? (
+                <div className="relative">
+                  <Repeat size={20} />
+                  <span className="absolute -bottom-1 -right-1 text-[6px] font-bold bg-green-500 text-white rounded-full w-2 h-2 flex items-center justify-center">
+                    1
+                  </span>
+                </div>
+              ) : repeatMode === "all" ? (
+                <div className="relative">
+                  <Repeat size={20} className="text-green-500" />
+                </div>
+              ) : (
+                <Repeat size={20} />
+              )}
             </button>
           </div>
 
