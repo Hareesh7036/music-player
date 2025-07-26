@@ -261,6 +261,8 @@ export default function Home() {
         {/* Music Player */}
         <div className="relative">
           <MusicPlayer
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
             currentSong={currentSong}
             playlist={songs}
             onNext={handleNext}

@@ -34,6 +34,8 @@ interface MusicPlayerProps {
   repeatMode: "none" | "one" | "all";
   shuffleMode: boolean;
   onShuffleModeChange: (mode: boolean) => void;
+  isPlaying: boolean;
+  setIsPlaying: (playing: boolean) => void;
   onRepeatModeChange: (mode: "none" | "one" | "all") => void;
   onRestartCurrentSong?: () => void;
 }
@@ -49,11 +51,12 @@ export default function MusicPlayer({
   repeatMode,
   shuffleMode,
   onShuffleModeChange,
+  isPlaying,
+  setIsPlaying,
   onRepeatModeChange,
 }: MusicPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(0.4);
+  const [volume, setVolume] = useState(0.3); // Default volume set to 50%
   const [likingState, setLikingState] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -65,9 +68,21 @@ export default function MusicPlayer({
     if (!audio) {
       return;
     }
-    audio.play();
+    // Set the volume when a new song is loaded
+    audio.volume = volume;
+    audio.play().catch((e) => console.error("Error playing audio:", e));
     setIsPlaying(true);
-  }, [currentSong]);
+  }, [currentSong, volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -130,13 +145,6 @@ export default function MusicPlayer({
   }, [volume]);
 
   const togglePlay = () => {
-    if (!audioRef.current || !currentSong) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
     setIsPlaying(!isPlaying);
   };
 
@@ -192,7 +200,19 @@ export default function MusicPlayer({
       <audio
         ref={audioRef}
         src={`http://localhost:8000${currentSong.filePath}`}
-        onLoadedData={() => setCurrentTime(0)}
+        onLoadedData={() => {
+          setCurrentTime(0);
+          // Ensure volume is set when audio is loaded
+          if (audioRef.current) {
+            audioRef.current.volume = volume;
+          }
+        }}
+        onPlay={() => {
+          // Double-check volume when playback starts
+          if (audioRef.current) {
+            audioRef.current.volume = volume;
+          }
+        }}
       />
 
       <div className="max-w-6xl mx-auto flex items-center justify-between">
