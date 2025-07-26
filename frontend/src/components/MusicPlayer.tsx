@@ -53,9 +53,7 @@ export default function MusicPlayer({
 }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [isShuffle, setIsShuffle] = useState(false);
-  // Remove the local state for repeatMode as it's now controlled by the parent
+  const [volume, setVolume] = useState(0.4);
   const [likingState, setLikingState] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
