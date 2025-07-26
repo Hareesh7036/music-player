@@ -31,8 +31,10 @@ interface MusicPlayerProps {
   onSongEnd: () => void;
   isFirstSong: boolean;
   isLastSong: boolean;
-  repeatMode: 'none' | 'one' | 'all';
-  onRepeatModeChange: (mode: 'none' | 'one' | 'all') => void;
+  repeatMode: "none" | "one" | "all";
+  shuffleMode: boolean;
+  onShuffleModeChange: (mode: boolean) => void;
+  onRepeatModeChange: (mode: "none" | "one" | "all") => void;
   onRestartCurrentSong?: () => void;
 }
 
@@ -45,6 +47,8 @@ export default function MusicPlayer({
   isFirstSong,
   isLastSong,
   repeatMode,
+  shuffleMode,
+  onShuffleModeChange,
   onRepeatModeChange,
 }: MusicPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -85,17 +89,21 @@ export default function MusicPlayer({
         }
       } else if (repeatMode === "all") {
         // For 'all' mode, go to the next song or loop back to the first
-        const currentIndex = playlist.findIndex(song => song._id === currentSong?._id);
+        const currentIndex = playlist.findIndex(
+          (song) => song._id === currentSong?._id
+        );
         const nextIndex = (currentIndex + 1) % playlist.length;
         const nextSong = playlist[nextIndex];
-        
+
         if (nextSong) {
           // Use a small timeout to prevent audio glitches
           setTimeout(() => {
             // Play the next song directly
             if (audioRef.current) {
               audioRef.current.src = `http://localhost:8000${nextSong.filePath}`;
-              audioRef.current.play().catch(e => console.error("Error playing next song:", e));
+              audioRef.current
+                .play()
+                .catch((e) => console.error("Error playing next song:", e));
               // Update the current song in the parent component
               onSongEnd();
             }
@@ -233,31 +241,38 @@ export default function MusicPlayer({
         <div className="flex flex-col items-center space-y-2 flex-2">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => setIsShuffle(!isShuffle)}
+              onClick={() => onShuffleModeChange(!shuffleMode)}
               className={`transition-colors ${
-                isShuffle ? "text-green-500" : "text-gray-400 hover:text-white"
+                shuffleMode
+                  ? "text-green-500"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
               <Shuffle size={20} />
             </button>
             <button
               onClick={(e) => {
-                if (repeatMode === 'one' && audioRef.current) {
+                if (repeatMode === "one" && audioRef.current) {
                   e.preventDefault();
                   audioRef.current.currentTime = 0;
                   // Always play from start in repeat one mode
-                  audioRef.current.play()
+                  audioRef.current
+                    .play()
                     .then(() => setIsPlaying(true))
-                    .catch(e => console.error("Error replaying song:", e));
+                    .catch((e) => console.error("Error replaying song:", e));
                 } else {
                   onPrevious();
                 }
               }}
-              disabled={isFirstSong && repeatMode !== 'one'}
+              disabled={isFirstSong && repeatMode !== "one" && !shuffleMode}
               className={`transition-colors ${
-                isFirstSong && repeatMode !== 'one' ? "text-gray-600" : "text-gray-400 hover:text-white"
+                isFirstSong && repeatMode !== "one" && !shuffleMode
+                  ? "text-gray-600"
+                  : "text-gray-400 hover:text-white"
               }`}
-              aria-label={repeatMode === 'one' ? "Restart song" : "Previous song"}
+              aria-label={
+                repeatMode === "one" ? "Restart song" : "Previous song"
+              }
             >
               <SkipBack size={24} />
             </button>
@@ -269,22 +284,25 @@ export default function MusicPlayer({
             </button>
             <button
               onClick={(e) => {
-                if (repeatMode === 'one' && audioRef.current) {
+                if (repeatMode === "one" && audioRef.current) {
                   e.preventDefault();
                   audioRef.current.currentTime = 0;
                   // Always play from start in repeat one mode
-                  audioRef.current.play()
+                  audioRef.current
+                    .play()
                     .then(() => setIsPlaying(true))
-                    .catch(e => console.error("Error replaying song:", e));
+                    .catch((e) => console.error("Error replaying song:", e));
                 } else {
                   onNext();
                 }
               }}
-              disabled={isLastSong && repeatMode === 'none'}
+              disabled={isLastSong && repeatMode === "none" && !shuffleMode}
               className={`transition-colors ${
-                isLastSong && repeatMode === 'none' ? "text-gray-600" : "text-gray-400 hover:text-white"
+                isLastSong && repeatMode === "none" && !shuffleMode
+                  ? "text-gray-600"
+                  : "text-gray-400 hover:text-white"
               }`}
-              aria-label={repeatMode === 'one' ? "Restart song" : "Next song"}
+              aria-label={repeatMode === "one" ? "Restart song" : "Next song"}
             >
               <SkipForward size={24} />
             </button>

@@ -28,7 +28,8 @@ export default function Home() {
   const [activeView, setActiveView] = useState("home");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showNoNextSong, setShowNoNextSong] = useState(false);
+  const [repeatMode, setRepeatMode] = useState<"none" | "one" | "all">("none");
+  const [shuffleMode, setShuffleMode] = useState(false);
 
   // Fetch songs from API
   useEffect(() => {
@@ -74,74 +75,77 @@ export default function Home() {
 
   const handleNext = () => {
     if (!currentSong || songs.length === 0) return;
-    
-    const currentIndex = songs.findIndex((song) => song._id === currentSong._id);
+
+    const currentIndex = songs.findIndex(
+      (song) => song._id === currentSong._id
+    );
     let nextIndex;
-    
-    if (currentIndex === songs.length - 1) {
-      // If it's the last song
-      if (repeatMode === 'all') {
-        // If repeat all is on, go to the first song
-        nextIndex = 0;
-      } else if (repeatMode !== 'one') {
-        // If not in repeat one mode, show message and stop
-        setShowNoNextSong(true);
-        setIsPlaying(false);
-        setTimeout(() => setShowNoNextSong(false), 2000);
-        return;
-      } else {
-        // In repeat one mode, stay on the current song
-        return;
-      }
+    if (shuffleMode) {
+      nextIndex = Math.floor(Math.random() * songs.length);
     } else {
-      // Go to the next song
-      nextIndex = currentIndex + 1;
+      if (currentIndex === songs.length - 1) {
+        // If it's the last song
+        if (repeatMode === "all") {
+          // If repeat all is on, go to the first song
+          nextIndex = 0;
+        } else {
+          // In repeat one mode, stay on the current song
+          return;
+        }
+      } else {
+        // Go to the next song
+        nextIndex = currentIndex + 1;
+      }
     }
-    
     // Play the next song
     handleSongSelect(songs[nextIndex]);
   };
 
   const handlePrevious = () => {
     if (!currentSong || songs.length === 0) return;
-    
-    // In repeat one mode, we let the MusicPlayer handle the restart
-    if (repeatMode === 'one') {
-      return;
-    }
-    
+
     const currentIndex = songs.findIndex(
       (song) => song._id === currentSong._id
     );
-    const prevIndex = currentIndex === 0 ? songs.length - 1 : currentIndex - 1;
+    let prevIndex;
+    if (shuffleMode) {
+      prevIndex = Math.floor(Math.random() * songs.length);
+    } else {
+      prevIndex = currentIndex === 0 ? songs.length - 1 : currentIndex - 1;
+    }
     handleSongSelect(songs[prevIndex]);
   };
 
-  const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleSongEnd = () => {
     if (!currentSong) return;
-    
-    const currentIndex = songs.findIndex((song) => song._id === currentSong._id);
+
+    const currentIndex = songs.findIndex(
+      (song) => song._id === currentSong._id
+    );
     const isLastSong = currentIndex === songs.length - 1;
-    
-    if (isLastSong && repeatMode !== 'all') {
+
+    if (isLastSong && repeatMode !== "all") {
       // If it's the last song and repeat is off, stop playback
       setIsPlaying(false);
       return;
     }
-    
+
     // Calculate next song index
     let nextIndex;
-    if (isLastSong && repeatMode === 'all') {
+    if (isLastSong && repeatMode === "all") {
       // If it's the last song and repeat all is on, go to first song
       nextIndex = 0;
     } else {
       // Otherwise go to next song
-      nextIndex = currentIndex + 1;
+      if (shuffleMode) {
+        nextIndex = Math.floor(Math.random() * songs.length);
+      } else {
+        nextIndex = currentIndex + 1;
+      }
     }
-    
+
     // If we have a valid next song, play it
     if (songs[nextIndex]) {
       handleSongSelect(songs[nextIndex]);
@@ -256,22 +260,27 @@ export default function Home() {
 
         {/* Music Player */}
         <div className="relative">
-          {/* No next song notification */}
-          {showNoNextSong && (
-            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-gray-800 text-white px-4 py-2 rounded-md text-sm">
-              No next song in the playlist
-            </div>
-          )}
           <MusicPlayer
             currentSong={currentSong}
             playlist={songs}
             onNext={handleNext}
             onPrevious={handlePrevious}
             onSongEnd={handleSongEnd}
-            isFirstSong={currentSong ? songs.findIndex(s => s._id === currentSong._id) === 0 : true}
-            isLastSong={currentSong ? songs.findIndex(s => s._id === currentSong._id) === songs.length - 1 : true}
+            isFirstSong={
+              currentSong
+                ? songs.findIndex((s) => s._id === currentSong._id) === 0
+                : true
+            }
+            isLastSong={
+              currentSong
+                ? songs.findIndex((s) => s._id === currentSong._id) ===
+                  songs.length - 1
+                : true
+            }
             repeatMode={repeatMode}
             onRepeatModeChange={setRepeatMode}
+            shuffleMode={shuffleMode}
+            onShuffleModeChange={setShuffleMode}
           />
         </div>
       </div>
