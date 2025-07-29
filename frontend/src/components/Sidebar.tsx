@@ -1,7 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Home, Search, Library, Plus, Heart, Music, Headphones } from 'lucide-react';
+import React from "react";
+import {
+  Home,
+  Search,
+  Library,
+  Plus,
+  Heart,
+  Music,
+  Headphones,
+  LogOut,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
 interface SidebarProps {
   activeView: string;
@@ -9,15 +20,43 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
+  const router = useRouter();
+  const { logout } = useUser();
+
+  const handleLogout = () => {
+    console.log("Logout initiated");
+    try {
+      logout();
+      console.log("Logout successful");
+      router.push("/");
+    } catch (err) {
+      // Error is already handled in the context
+      console.error("Logout error:", err);
+    } finally {
+      console.log("Clearing local storage and redirecting to login...");
+      // Clear local state and storage
+      localStorage.clear();
+      // Clear all cookies
+      document.cookie.split(";").forEach((c) => {
+        document.cookie =
+          c.trim().split("=")[0] +
+          "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+      });
+      // Force a full page reload to ensure all state is cleared
+      window.location.href = "/login";
+      // Force a hard reload to ensure all state is cleared
+      window.location.reload();
+    }
+  };
   const menuItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'search', label: 'Search', icon: Search },
-    { id: 'library', label: 'Your Library', icon: Library },
+    { id: "home", label: "Home", icon: Home },
+    { id: "search", label: "Search", icon: Search },
+    { id: "library", label: "Your Library", icon: Library },
   ];
 
   const playlistItems = [
-    { id: 'liked', label: 'Liked Songs', icon: Heart },
-    { id: 'recently-played', label: 'Recently Played', icon: Headphones },
+    { id: "liked", label: "Liked Songs", icon: Heart },
+    { id: "recently-played", label: "Recently Played", icon: Headphones },
   ];
 
   return (
@@ -41,8 +80,8 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
                   onClick={() => onViewChange(item.id)}
                   className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
                     activeView === item.id
-                      ? 'bg-gray-800 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-400 hover:text-white hover:bg-gray-800"
                   }`}
                 >
                   <Icon size={20} />
@@ -73,8 +112,8 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
                   onClick={() => onViewChange(item.id)}
                   className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
                     activeView === item.id
-                      ? 'bg-gray-800 text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-400 hover:text-white hover:bg-gray-800"
                   }`}
                 >
                   <Icon size={20} />
@@ -87,10 +126,21 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
       </div>
 
       {/* Footer */}
-      <div className="mt-auto p-4 border-t border-gray-800">
-        <div className="text-xs text-gray-400">
-          <p>Music Player v1.0</p>
-          <p className="mt-1">Built with Next.js & Elysia</p>
+      <div className="mt-auto border-t border-gray-800">
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center space-x-3 px-6 py-3 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+        >
+          <LogOut size={20} />
+          <span className="font-medium">Logout</span>
+        </button>
+
+        <div className="p-4">
+          <div className="text-xs text-gray-400">
+            <p>Music Player v1.0</p>
+            <p className="mt-1">Built with Next.js & Elysia</p>
+          </div>
         </div>
       </div>
     </div>

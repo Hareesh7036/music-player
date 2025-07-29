@@ -222,11 +222,7 @@ export default function Home() {
         return (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white">Good evening</h2>
-              <button className="flex items-center space-x-2 bg-green-500 text-black px-4 py-2 rounded-full hover:bg-green-400 transition-colors">
-                <Upload size={16} />
-                <span className="font-medium">Upload Music</span>
-              </button>
+              <h2 className="text-2xl font-bold text-white">Hello Buddy!</h2>
             </div>
 
             {loading ? (
