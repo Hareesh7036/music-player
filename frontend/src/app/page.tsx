@@ -250,7 +250,7 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6 pb-32 overflow-y-auto">
+        <main className="flex-1 p-6 pb-32 overflow-hidden">
           {renderContent()}
         </main>
 

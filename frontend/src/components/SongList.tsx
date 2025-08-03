@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Play, Pause, MoreHorizontal, Clock, Heart } from 'lucide-react';
-import { useLikedSongs } from '../hooks/useLikedSongs';
+import React, { useState } from "react";
+import { Play, Pause, MoreHorizontal, Clock, Heart } from "lucide-react";
+import { useLikedSongs } from "../hooks/useLikedSongs";
 
 interface Song {
   _id: string;
@@ -24,14 +24,27 @@ interface SongListProps {
   onTogglePlay: () => void;
 }
 
-export default function SongList({ songs, currentSong, isPlaying, onSongSelect, onTogglePlay }: SongListProps) {
-  const { likedSongIds, toggleLike, isLiked, isLoading: likesLoading } = useLikedSongs();
-  const [likingStates, setLikingStates] = useState<{ [key: string]: boolean }>({});
+export default function SongList({
+  songs,
+  currentSong,
+  isPlaying,
+  onSongSelect,
+  onTogglePlay,
+}: SongListProps) {
+  const {
+    likedSongIds,
+    toggleLike,
+    isLiked,
+    isLoading: likesLoading,
+  } = useLikedSongs();
+  const [likingStates, setLikingStates] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const formatDate = (dateString: string) => {
@@ -40,21 +53,21 @@ export default function SongList({ songs, currentSong, isPlaying, onSongSelect, 
 
   const handleLikeToggle = async (songId: string, event: React.MouseEvent) => {
     event.stopPropagation();
-    
+
     // Set loading state for this specific song
-    setLikingStates(prev => ({ ...prev, [songId]: true }));
-    
+    setLikingStates((prev) => ({ ...prev, [songId]: true }));
+
     try {
       const result = await toggleLike(songId);
       if (!result.success) {
-        console.error('Failed to toggle like:', result.error);
+        console.error("Failed to toggle like:", result.error);
         // You could add a toast notification here
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     } finally {
       // Remove loading state
-      setLikingStates(prev => ({ ...prev, [songId]: false }));
+      setLikingStates((prev) => ({ ...prev, [songId]: false }));
     }
   };
 
@@ -73,15 +86,15 @@ export default function SongList({ songs, currentSong, isPlaying, onSongSelect, 
       </div>
 
       {/* Song List */}
-      <div className="max-h-96 overflow-y-auto">
+      <div className="max-h-96 overflow-y-auto scrollbar-none">
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
-          
+
           return (
             <div
               key={song._id}
               className={`grid grid-cols-12 gap-4 p-3 hover:bg-gray-800 transition-colors group cursor-pointer ${
-                isCurrentSong ? 'bg-gray-800' : ''
+                isCurrentSong ? "bg-gray-800" : ""
               }`}
               onClick={() => onSongSelect(song)}
             >
@@ -112,8 +125,8 @@ export default function SongList({ songs, currentSong, isPlaying, onSongSelect, 
                     <span className="text-gray-400 group-hover:hidden">
                       {index + 1}
                     </span>
-                    <Play 
-                      size={16} 
+                    <Play
+                      size={16}
                       className="text-white hidden group-hover:block absolute top-0 left-0"
                     />
                   </div>
@@ -124,8 +137,8 @@ export default function SongList({ songs, currentSong, isPlaying, onSongSelect, 
               <div className="col-span-5 flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
-                    <img 
-                      src={`http://localhost:8000${song.coverImage}`} 
+                    <img
+                      src={`http://localhost:8000${song.coverImage}`}
                       alt={song.title}
                       className="w-full h-full object-cover"
                     />
@@ -134,17 +147,23 @@ export default function SongList({ songs, currentSong, isPlaying, onSongSelect, 
                   )}
                 </div>
                 <div className="min-w-0">
-                  <h4 className={`font-medium truncate ${isCurrentSong ? 'text-green-500' : 'text-white'}`}>
+                  <h4
+                    className={`font-medium truncate ${
+                      isCurrentSong ? "text-green-500" : "text-white"
+                    }`}
+                  >
                     {song.title}
                   </h4>
-                  <p className="text-gray-400 text-sm truncate">{song.artist}</p>
+                  <p className="text-gray-400 text-sm truncate">
+                    {song.artist}
+                  </p>
                 </div>
               </div>
 
               {/* Album */}
               <div className="col-span-2 flex items-center">
                 <span className="text-gray-400 text-sm truncate">
-                  {song.album || 'Unknown Album'}
+                  {song.album || "Unknown Album"}
                 </span>
               </div>
 
@@ -164,19 +183,27 @@ export default function SongList({ songs, currentSong, isPlaying, onSongSelect, 
 
               {/* Actions */}
               <div className="col-span-1 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                <button 
+                <button
                   className={`p-1 transition-colors ${
-                    isLiked(song._id) 
-                      ? 'text-red-500 hover:text-red-400' 
-                      : 'text-gray-400 hover:text-white'
-                  } ${likingStates[song._id] ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    isLiked(song._id)
+                      ? "text-red-500 hover:text-red-400"
+                      : "text-gray-400 hover:text-white"
+                  } ${
+                    likingStates[song._id]
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
                   onClick={(e) => handleLikeToggle(song._id, e)}
                   disabled={likingStates[song._id]}
-                  title={isLiked(song._id) ? 'Remove from favorites' : 'Add to favorites'}
+                  title={
+                    isLiked(song._id)
+                      ? "Remove from favorites"
+                      : "Add to favorites"
+                  }
                 >
-                  <Heart 
-                    size={16} 
-                    fill={isLiked(song._id) ? 'currentColor' : 'none'}
+                  <Heart
+                    size={16}
+                    fill={isLiked(song._id) ? "currentColor" : "none"}
                   />
                 </button>
                 <button className="text-gray-400 hover:text-white p-1">
