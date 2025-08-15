@@ -146,13 +146,6 @@ app
       }`
     );
     console.log("Press Ctrl+C to stop the server\n");
-
-    // Log all registered routes
-    console.log("🛣️  Registered routes:");
-    app.routes.forEach((route) => {
-      console.log(`  ${route.method} ${route.path}`);
-    });
-    console.log("");
   })
   .on("error", (error) => {
     console.error("❌ Server failed to start:", error);

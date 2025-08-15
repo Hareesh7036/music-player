@@ -150,11 +150,16 @@ export default function MusicPlayer({
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const audio = audioRef.current;
-    if (!audio || !currentSong) return;
+    if (!audio || !currentSong?.duration) return; // duration must be valid
 
-    const newTime = (parseFloat(e.target.value) / 100) * currentSong.duration;
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
+    const percentage = parseFloat(e.target.value); // assume range input min=0, max=100
+    const newTime = (percentage / 100) * currentSong.duration;
+
+    console.log("New time:", currentSong.duration, percentage, newTime);
+
+    // Ensure time is within valid bounds
+    audio.currentTime = Math.min(Math.max(newTime, 0), currentSong.duration);
+    // setCurrentTime(audio.currentTime);
   };
 
   const formatTime = (seconds: number) => {
@@ -229,7 +234,7 @@ export default function MusicPlayer({
               <div className="text-gray-400 text-xs">No Cover</div>
             )}
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 w-[200px]">
             <h3 className="font-semibold truncate">{currentSong.title}</h3>
             <p className="text-gray-400 text-sm truncate">
               {currentSong.artist}
