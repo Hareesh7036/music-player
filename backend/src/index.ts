@@ -44,6 +44,11 @@ interface ErrorResponse {
   error?: string;
 }
 
+const allowedOrigins =
+  process.env.CORS_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean) ?? [];
+
 const app = new Elysia()
   // Request logging
   .onRequest(({ request }) => {
@@ -90,8 +95,7 @@ const app = new Elysia()
         const origin = request.headers.get("origin");
         console.log("CORS Origin:", origin);
         if (!origin) return false;
-        // Allow localhost and 127.0.0.1 for development
-        return origin.includes("localhost") || origin.includes("127.0.0.1");
+        return allowedOrigins.includes(origin);
       },
     })
   )

@@ -43,16 +43,6 @@ const app = new Elysia({ prefix: "/api/auth" })
     return { success: false, message: "An error occurred" };
   });
 
-app.options("/logout", ({ set }) => {
-  set.headers = {
-    "Access-Control-Allow-Origin": "http://localhost:3000",
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  };
-  set.status = 204; // No Content
-  return "";
-});
 // Register route
 app.post("/register", async ({ body, set, request }) => {
   const requestId = Math.random().toString(36).substring(2, 10);
@@ -226,11 +216,6 @@ app.post(
   "/logout",
   async ({ set }) => {
     try {
-      set.headers = {
-        "Access-Control-Allow-Origin": "http://localhost:3000",
-        "Access-Control-Allow-Credentials": "true",
-      };
-
       return {
         success: true,
         message: "Successfully logged out",

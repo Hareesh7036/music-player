@@ -79,19 +79,19 @@ const userSchema = new Schema<IUser, IUserModel>(
 userSchema.pre<IUser>("save", async function (next) {
   // Only hash the password if it has been modified (or is new)
   if (!this.isModified("password")) {
-    console.log('Password not modified, skipping hashing');
+    console.log("Password not modified, skipping hashing");
     return next();
   }
 
   try {
-    console.log('Hashing password...');
+    console.log("Hashing password...");
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
-    console.log('Password hashed successfully');
+    console.log("Password hashed successfully");
     next();
   } catch (error: any) {
-    console.error('Error hashing password:', error);
+    console.error("Error hashing password:", error);
     next(error);
   }
 });
@@ -105,17 +105,15 @@ userSchema.methods.comparePassword = async function (
 
 // Generate JWT token
 userSchema.methods.generateAuthToken = function (): string {
-  const payload = { 
-    id: this._id.toString(), 
-    email: this.email 
+  const payload = {
+    id: this._id.toString(),
+    email: this.email,
   };
 
+  const secret = config.jwtSecret || "default_secret";
+
   // Sign the token with the secret key and set expiration
-  return jwt.sign(
-    payload,
-    config.jwtSecret,
-    { expiresIn: '7d' } // 7 days expiration
-  ) as string; // Type assertion to handle the JWT return type
+  return jwt.sign(payload, secret, { expiresIn: "7d" });
 };
 
 // Create and export the model
