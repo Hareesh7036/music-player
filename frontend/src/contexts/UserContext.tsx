@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface User {
-  _id: string;
+  id: string;
   username: string;
   email: string;
 }
@@ -231,7 +231,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const value: UserContextType = {
     user,
     setUser,
-    userId: user?._id || defaultUserId,
+    userId: user?.id || defaultUserId,
     login,
     register,
     logout,
