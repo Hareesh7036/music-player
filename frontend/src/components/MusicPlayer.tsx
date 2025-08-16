@@ -14,6 +14,8 @@ import {
 import { useLikedSongs } from "../hooks/useLikedSongs";
 import Image from "next/image";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 interface Song {
   _id: string;
   title: string;
@@ -95,7 +97,7 @@ export default function MusicPlayer({
         // For 'one' mode, restart the current song
         if (audioRef.current && currentSong) {
           // Ensure the src is set before playing
-          audioRef.current.src = `http://localhost:8000${currentSong.filePath}`;
+          audioRef.current.src = `${BACKEND_URL}${currentSong.filePath}`;
           audioRef.current.currentTime = 0;
           audioRef.current
             .play()
@@ -114,7 +116,7 @@ export default function MusicPlayer({
           setTimeout(() => {
             // Play the next song directly
             if (audioRef.current) {
-              audioRef.current.src = `http://localhost:8000${nextSong.filePath}`;
+              audioRef.current.src = `${BACKEND_URL}${nextSong.filePath}`;
               audioRef.current
                 .play()
                 .catch((e) => console.error("Error playing next song:", e));
@@ -202,7 +204,7 @@ export default function MusicPlayer({
     <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 shadow-2xl">
       <audio
         ref={audioRef}
-        src={`http://localhost:8000${currentSong.filePath}`}
+        src={`${BACKEND_URL}${currentSong.filePath}`}
         onLoadedData={() => {
           setCurrentTime(0);
           // Ensure volume is set when audio is loaded
@@ -224,7 +226,7 @@ export default function MusicPlayer({
           <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
             {currentSong.coverImage ? (
               <Image
-                src={`http://localhost:8000${currentSong.coverImage}`}
+                src={`${BACKEND_URL}${currentSong.coverImage}`}
                 alt={currentSong.title}
                 className="w-full h-full object-cover"
               />

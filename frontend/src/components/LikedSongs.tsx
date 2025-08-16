@@ -70,7 +70,7 @@ export default function LikedSongs({
     }
   };
 
-  const fetchLikedSongs = async () => {
+  const fetchLikedSongs = React.useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -86,11 +86,11 @@ export default function LikedSongs({
     } finally {
       setLoading(false);
     }
-  };
+  }, [getLikedSongs]);
 
   useEffect(() => {
     fetchLikedSongs();
-  }, []);
+  }, [fetchLikedSongs]);
 
   if (loading) {
     return (
@@ -218,7 +218,7 @@ export default function LikedSongs({
                 <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
-                      src={`http://localhost:8000${song.coverImage}`}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${song.coverImage}`}
                       alt={song.title}
                       className="w-full h-full object-cover"
                     />

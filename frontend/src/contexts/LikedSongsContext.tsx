@@ -12,17 +12,17 @@ const LikedSongsContext = createContext<LikedSongsContextType | undefined>(
   undefined
 );
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const LikedSongsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { userId } = useUser();
   const [likedSongIds, setLikedSongIds] = React.useState<string[]>([]);
 
-  const fetchLikedSongs = async () => {
+  const fetchLikedSongs = React.useCallback(async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/likes/ids/${userId}`
-      );
+      const response = await fetch(`${API_URL}/likes/ids/${userId}`);
       const result = await response.json();
 
       if (result.success) {
@@ -31,7 +31,7 @@ export const LikedSongsProvider: React.FC<{ children: ReactNode }> = ({
     } catch (error) {
       console.error("Failed to fetch liked songs:", error);
     }
-  };
+  }, [userId]);
 
   // Initial fetch
   React.useEffect(() => {

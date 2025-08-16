@@ -30,6 +30,8 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
@@ -59,13 +61,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           // Verify token with backend
           const verifyToken = async () => {
             try {
-              const response = await fetch(
-                "http://localhost:8000/api/auth/verify",
-                {
-                  headers: { Authorization: `Bearer ${token}` },
-                  credentials: "include",
-                }
-              );
+              const response = await fetch(`${API_URL}/auth/verify`, {
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: "include",
+              });
 
               if (response.ok) {
                 setUser(JSON.parse(storedUser));
@@ -101,7 +100,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -143,7 +142,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -172,7 +171,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     try {
       const token = localStorage.getItem("musicPlayerToken");
 
-      await fetch("http://localhost:8000/api/auth/logout", {
+      await fetch(`${API_URL}/auth/logout`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -197,12 +196,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       if (storedUser && token) {
         try {
           // Verify token with backend
-          const response = await fetch(
-            "http://localhost:8000/api/auth/verify",
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+          const response = await fetch(`${API_URL}auth/verify`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
           if (response.ok) {
             setUser(JSON.parse(storedUser));

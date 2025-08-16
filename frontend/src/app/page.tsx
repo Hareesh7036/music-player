@@ -7,7 +7,6 @@ import SongList from "@/components/SongList";
 import MusicPlayer from "@/components/MusicPlayer";
 import LikedSongs from "@/components/LikedSongs";
 import { Search } from "lucide-react";
-import { useRef } from "react";
 
 interface Song {
   _id: string;
@@ -20,6 +19,8 @@ interface Song {
   playCount: number;
   createdAt: string;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Home() {
   const [songs, setSongs] = useState<Song[]>([]);
@@ -39,7 +40,7 @@ export default function Home() {
   const fetchSongs = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8000/api/songs");
+      const response = await axios.get(`${API_URL}/songs`);
       if (response.data.success) {
         setSongs(response.data.data);
       }
@@ -59,7 +60,7 @@ export default function Home() {
 
   const incrementPlayCount = async (songId: string) => {
     try {
-      await axios.patch(`http://localhost:8000/api/songs/${songId}/play`);
+      await axios.patch(`${API_URL}/songs/${songId}/play`);
       // Update local state
       setSongs((prevSongs) =>
         prevSongs.map((song) =>

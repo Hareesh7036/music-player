@@ -134,7 +134,7 @@ export default function SongList({
                 <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
-                      src={`http://localhost:8000${song.coverImage}`}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${song.coverImage}`}
                       alt={song.title}
                       className="w-full h-full object-cover"
                     />
