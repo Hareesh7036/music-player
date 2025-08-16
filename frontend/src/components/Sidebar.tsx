@@ -48,7 +48,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
   const playlistItems = [
     { id: "liked", label: "Liked Songs", icon: Heart },
-    { id: "recently-played", label: "Recently Played", icon: Headphones },
+    // { id: "recently-played", label: "Recently Played", icon: Headphones },
   ];
 
   return (
@@ -83,12 +83,12 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
         </ul>
       </nav>
 
-      <div className="px-3 mt-6">
+      {/* <div className="px-3 mt-6">
         <button className="w-full flex items-center space-x-3 px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors">
           <Plus size={20} />
           <span className="font-medium">Create Playlist</span>
         </button>
-      </div>
+      </div> */}
 
       <div className="px-3 mt-6">
         <ul className="space-y-2">
