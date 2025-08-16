@@ -1,16 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Home,
-  Search,
-  Library,
-  Plus,
-  Heart,
-  Music,
-  Headphones,
-  LogOut,
-} from "lucide-react";
+import { Home, Search, Library, Heart, Music, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/UserContext";
 

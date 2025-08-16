@@ -48,13 +48,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const defaultUserId = "687b4efb1d70870c9bb31e60"; // Fallback user ID
 
-  // Use a state to track if we're on the client
-  const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
-    // This effect only runs on the client
-    setIsClient(true);
-
     // Only access localStorage on the client side
     if (typeof window !== "undefined") {
       const storedUser = localStorage.getItem("musicPlayerUser");

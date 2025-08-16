@@ -6,7 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import SongList from "@/components/SongList";
 import MusicPlayer from "@/components/MusicPlayer";
 import LikedSongs from "@/components/LikedSongs";
-import { Search, Upload } from "lucide-react";
+import { Search } from "lucide-react";
 import { useRef } from "react";
 
 interface Song {
@@ -115,8 +115,6 @@ export default function Home() {
     }
     handleSongSelect(songs[prevIndex]);
   };
-
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleSongEnd = () => {
     if (!currentSong) return;

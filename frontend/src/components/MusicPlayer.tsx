@@ -12,6 +12,7 @@ import {
   Repeat,
 } from "lucide-react";
 import { useLikedSongs } from "../hooks/useLikedSongs";
+import Image from "next/image";
 
 interface Song {
   _id: string;
@@ -72,7 +73,7 @@ export default function MusicPlayer({
     audio.volume = volume;
     audio.play().catch((e) => console.error("Error playing audio:", e));
     setIsPlaying(true);
-  }, [currentSong, volume]);
+  }, [currentSong, volume, setIsPlaying]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -136,7 +137,7 @@ export default function MusicPlayer({
       audio.removeEventListener("timeupdate", updateTime);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [onSongEnd]);
+  }, [onSongEnd, currentSong, playlist, repeatMode, setIsPlaying]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -154,9 +155,6 @@ export default function MusicPlayer({
 
     const percentage = parseFloat(e.target.value); // assume range input min=0, max=100
     const newTime = (percentage / 100) * currentSong.duration;
-
-    console.log("New time:", currentSong.duration, percentage, newTime);
-
     // Ensure time is within valid bounds
     audio.currentTime = Math.min(Math.max(newTime, 0), currentSong.duration);
     // setCurrentTime(audio.currentTime);
@@ -225,7 +223,7 @@ export default function MusicPlayer({
         <div className="flex items-center space-x-4 flex-1">
           <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
             {currentSong.coverImage ? (
-              <img
+              <Image
                 src={`http://localhost:8000${currentSong.coverImage}`}
                 alt={currentSong.title}
                 className="w-full h-full object-cover"

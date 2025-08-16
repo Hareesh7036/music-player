@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Play, Pause, MoreHorizontal, Clock, Heart } from "lucide-react";
 import { useLikedSongs } from "../hooks/useLikedSongs";
+import Image from "next/image";
 
 interface Song {
   _id: string;
@@ -31,12 +32,7 @@ export default function SongList({
   onSongSelect,
   onTogglePlay,
 }: SongListProps) {
-  const {
-    likedSongIds,
-    toggleLike,
-    isLiked,
-    isLoading: likesLoading,
-  } = useLikedSongs();
+  const { toggleLike, isLiked } = useLikedSongs();
   const [likingStates, setLikingStates] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -137,7 +133,7 @@ export default function SongList({
               <div className="col-span-5 flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
-                    <img
+                    <Image
                       src={`http://localhost:8000${song.coverImage}`}
                       alt={song.title}
                       className="w-full h-full object-cover"
