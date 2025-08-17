@@ -63,14 +63,14 @@ music-player/
 
    ```bash
    cd backend
-   npm install
+   bun install
    ```
 
 3. **Install frontend dependencies**
 
    ```bash
    cd ../frontend
-   npm install
+   bun install
    ```
 
 4. **Set up MongoDB**
@@ -83,7 +83,7 @@ music-player/
 
    ```bash
    cd backend
-   npm run dev
+   bun run dev
    ```
 
    The API will be available at `http://localhost:8000`
@@ -92,7 +92,7 @@ music-player/
 
    ```bash
    cd frontend
-   npm run dev
+   bun run dev
    ```
 
    The application will be available at `http://localhost:3000`
