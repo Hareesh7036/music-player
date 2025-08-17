@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Model, Types } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { config } from "../config";
+import { config } from "../config.js";
 
 // Interface for User document
 export interface IUser extends Document {

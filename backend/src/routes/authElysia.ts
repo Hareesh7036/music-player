@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
-import { User, IUser } from "../models/User";
-import { auth } from "../plugins/auth";
+import { User, IUser } from "../models/User.js";
+import { auth } from "../plugins/auth.js";
 import { Types } from "mongoose";
 
 // ------------------ Type Definitions ------------------

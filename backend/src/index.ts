@@ -3,10 +3,10 @@ import { cors } from "@elysiajs/cors";
 import { jwt } from "@elysiajs/jwt";
 import { staticPlugin } from "@elysiajs/static";
 import mongoose from "mongoose";
-import { songsRoutes } from "./routes/songs";
-import { likesRoutes } from "./routes/likes";
-import { authRoutes } from "./routes/authElysia";
-import { config } from "./config";
+import { songsRoutes } from "./routes/songs.js";
+import { likesRoutes } from "./routes/likes.js";
+import { authRoutes } from "./routes/authElysia.js";
+import { config } from "./config.js";
 import dotenv from "dotenv";
 
 // Load environment variables

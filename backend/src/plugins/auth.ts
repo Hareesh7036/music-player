@@ -1,7 +1,7 @@
 import { Elysia } from "elysia";
 import jwt from "jsonwebtoken";
-import { User, IUser } from "../models/User";
-import { config } from "../config";
+import { User, IUser } from "../models/User.js";
+import { config } from "../config.js";
 
 // Define the type for our auth context
 type AuthContext = {
