@@ -33,7 +33,6 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      console.log("Login successful");
       router.push("/");
     } catch (err) {
       // Error is already handled in the context

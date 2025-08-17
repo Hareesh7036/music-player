@@ -66,7 +66,7 @@ export const useLikedSongs = () => {
   // Get all liked songs with full details
   const getLikedSongs = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}likes/user/${userId}`);
+      const response = await fetch(`${API_URL}/likes/user/${userId}`);
       const result = await response.json();
 
       if (result.success) {

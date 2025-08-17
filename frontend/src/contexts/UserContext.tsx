@@ -50,52 +50,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
   const defaultUserId = "687b4efb1d70870c9bb31e60"; // Fallback user ID
 
-  useEffect(() => {
-    // Only access localStorage on the client side
-    if (typeof window !== "undefined") {
-      const storedUser = localStorage.getItem("musicPlayerUser");
-      const token = localStorage.getItem("musicPlayerToken");
-
-      if (storedUser && token) {
-        try {
-          // Verify token with backend
-          const verifyToken = async () => {
-            try {
-              const response = await fetch(`${API_URL}/auth/verify`, {
-                headers: { Authorization: `Bearer ${token}` },
-                credentials: "include",
-              });
-
-              if (response.ok) {
-                setUser(JSON.parse(storedUser));
-              } else {
-                // Token is invalid, clear storage
-                localStorage.removeItem("musicPlayerUser");
-                localStorage.removeItem("musicPlayerToken");
-                setUser(null);
-              }
-            } catch (error) {
-              console.error("Error verifying token:", error);
-              localStorage.removeItem("musicPlayerUser");
-              localStorage.removeItem("musicPlayerToken");
-              setUser(null);
-            }
-          };
-
-          verifyToken();
-        } catch (error) {
-          console.error("Error parsing stored user:", error);
-          localStorage.removeItem("musicPlayerUser");
-          localStorage.removeItem("musicPlayerToken");
-          setUser(null);
-        }
-      } else {
-        // No stored user or token
-        setUser(null);
-      }
-    }
-  }, []);
-
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
@@ -120,11 +74,16 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       localStorage.setItem("musicPlayerToken", data.token);
 
       // Also set a cookie for server-side access
-      document.cookie = `musicPlayerToken=${
-        data.token
-      }; path=/; sameSite=lax; ${
-        window.location.protocol === "https:" ? "secure;" : ""
-      }`;
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 7); // 7 days validity
+
+      document.cookie =
+        "musicPlayerToken=" +
+        data.token +
+        "; path=/; expires=" +
+        expiry.toUTCString() +
+        "; SameSite=Lax" +
+        (window.location.protocol === "https:" ? "; Secure" : "");
     } catch (err) {
       console.error("Login error:", err);
       setError(err instanceof Error ? err.message : "Login failed");
@@ -173,9 +132,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
       await fetch(`${API_URL}/auth/logout`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         credentials: "include",
       });
     } catch (err) {
@@ -196,8 +152,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       if (storedUser && token) {
         try {
           // Verify token with backend
-          const response = await fetch(`${API_URL}auth/verify`, {
-            headers: { Authorization: `Bearer ${token}` },
+          const response = await fetch(`${API_URL}/auth/verify`, {
+            credentials: "include",
           });
 
           if (response.ok) {
@@ -206,11 +162,13 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             // Token is invalid, clear storage
             localStorage.removeItem("musicPlayerUser");
             localStorage.removeItem("musicPlayerToken");
+            setUser(null);
           }
         } catch (error) {
           console.error("Error verifying token:", error);
           localStorage.removeItem("musicPlayerUser");
           localStorage.removeItem("musicPlayerToken");
+          setUser(null);
         }
       }
     };

@@ -8,11 +8,12 @@ type AuthContext = {
   user: IUser;
 };
 
-export const auth = new Elysia({ name: "auth" }).derive(
+export const auth = new Elysia({ name: "musicPlayerToken" }).derive(
+  { as: "global" },
   async ({
     request,
     set,
-    cookie: { auth },
+    cookie: { musicPlayerToken },
     path,
   }): Promise<{ user?: IUser }> => {
     // // Skip auth for logout endpoint
@@ -21,7 +22,8 @@ export const auth = new Elysia({ name: "auth" }).derive(
     //   return { user: undefined };
     // }
 
-    const token = auth.value;
+    const token = musicPlayerToken.value;
+    console.log(`Token from cookies: ${musicPlayerToken}`);
 
     if (!token) {
       console.log("No token found in cookies");
