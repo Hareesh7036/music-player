@@ -59,7 +59,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-screen w-64 bg-black text-white flex flex-col pb-30 transform transition-transform duration-300 z-40
+        className={`fixed top-0 left-0 h-screen w-65 bg-black text-white flex flex-col pb-30 transform transition-transform duration-300 z-40
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}
       >
         {/* Desktop logo */}
