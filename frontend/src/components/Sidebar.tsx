@@ -63,7 +63,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
         ${isOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0`}
       >
         {/* Desktop logo */}
-        <div className="p-6 hidden md:flex items-center space-x-2 mt-14 md:mt-0">
+        <div className="p-6 hidden md:flex items-center space-x-2 mt-13 md:mt-0">
           <Music className="text-green-500" size={32} />
           <h1 className="text-xl font-bold">MusicPlayer</h1>
         </div>
