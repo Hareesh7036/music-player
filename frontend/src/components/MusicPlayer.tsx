@@ -201,7 +201,7 @@ export default function MusicPlayer({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 shadow-2xl">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white  shadow-2xl">
       <audio
         ref={audioRef}
         src={`${BACKEND_URL}${currentSong.filePath}`}
@@ -220,49 +220,70 @@ export default function MusicPlayer({
         }}
       />
 
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-        {/* Song Info */}
-        <div className="flex items-center space-x-4 flex-1">
-          <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
-            {currentSong.coverImage ? (
-              <Image
-                src={`${BACKEND_URL}${currentSong.coverImage}`}
-                alt={currentSong.title}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="text-gray-400 text-xs">No Cover</div>
-            )}
-          </div>
-          <div className="min-w-0 w-[200px]">
-            <h3 className="font-semibold truncate">{currentSong.title}</h3>
-            <p className="text-gray-400 text-sm truncate">
-              {currentSong.artist}
-            </p>
-          </div>
-          <button
-            onClick={handleLikeToggle}
-            disabled={likingState}
-            className={`transition-colors ${
-              currentSong && isLiked(currentSong._id)
-                ? "text-red-500 hover:text-red-400"
-                : "text-gray-400 hover:text-white"
-            } ${likingState ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            <Heart
-              size={20}
-              fill={
-                currentSong && isLiked(currentSong._id)
-                  ? "currentColor"
-                  : "none"
-              }
-            />
-          </button>
-        </div>
+       <div className="max-w-6xl mx-auto flex sm:flex-row items-center  gap-4 p-2 sm:gap-6 px-10">
+  {/* Song Info */}
+<div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 flex-1 text-left px-3">
+  <div className="w-28 h-14 sm:w-20 p-0  bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+      {currentSong.coverImage ? (
+        <Image
+          src={`${BACKEND_URL}${currentSong.coverImage}`}
+          alt={currentSong.title}
+          className="w-full h-full object-cover"
+        />
+      ) : (
+        <div className="text-gray-400 text-xs">No Cover</div>
+      )}
+    </div>
+
+    <div className="min-w-0 w-full sm:w-[200px]">
+      <h3 className="font-semibold truncate">{currentSong.title}</h3>
+      <p className="text-gray-400 text-sm truncate">{currentSong.artist}</p>
+    </div>
+
+    <button
+      onClick={handleLikeToggle}
+      disabled={likingState}
+      className={`transition-colors ${
+        currentSong && isLiked(currentSong._id)
+          ? "text-red-500 hover:text-red-400"
+          : "text-gray-400 hover:text-white"
+      } ${likingState ? "opacity-50 cursor-not-allowed" : ""}`}
+    >
+      <Heart
+        size={20}
+        fill={
+          currentSong && isLiked(currentSong._id) ? "currentColor" : "none"
+        }
+      />
+    </button>
+  </div>
+
+</div>
+{/* Progress Bar */}
+<div className="w-full flex justify-center px-5 p-2">
+  <div className="flex items-center gap-2 w-full max-w-xl px-5">
+    <span className="text-xs text-gray-400 min-w-[40px] text-right">
+      {formatTime(currentTime)}
+    </span>
+
+    <input
+      type="range"
+      min="0"
+      max="100"
+      value={progress}
+      onChange={handleSeek}
+      className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+    />
+
+    <span className="text-xs text-gray-400 min-w-[40px] text-left">
+      {formatTime(currentSong.duration)}
+    </span>
+  </div>
+</div>
 
         {/* Player Controls */}
         <div className="flex flex-col items-center space-y-2 flex-2">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 ">
             <button
               onClick={() => onShuffleModeChange(!shuffleMode)}
               className={`transition-colors ${
@@ -368,40 +389,20 @@ export default function MusicPlayer({
               )}
             </button>
           </div>
-
-          {/* Progress Bar */}
-          <div className="flex items-center space-x-2 w-full max-w-md">
-            <span className="text-xs text-gray-400">
-              {formatTime(currentTime)}
-            </span>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={progress}
-              onChange={handleSeek}
-              className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-            />
-            <span className="text-xs text-gray-400">
-              {formatTime(currentSong.duration)}
-            </span>
-          </div>
-        </div>
-
-        {/* Volume Control */}
-        <div className="flex items-center space-x-2 flex-1 justify-end">
-          <Volume2 size={20} className="text-gray-400" />
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
-            className="w-24 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-          />
-        </div>
       </div>
+      {/* Volume Control - Responsive */}
+<div className="hidden md:flex items-center space-x-2 justify-center md:float-right w-{200px} mx-10 p-2 ">
+  <Volume2 size={20} className="text-gray-400 " />
+  <input
+    type="range"
+    min="0"
+    max="1"
+    step="0.1"
+    value={volume}
+    onChange={(e) => setVolume(parseFloat(e.target.value))}
+    className="w-24 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+  />
+</div>
     </div>
   );
 }

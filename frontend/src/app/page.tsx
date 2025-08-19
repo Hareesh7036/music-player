@@ -170,7 +170,7 @@ export default function Home() {
     switch (activeView) {
       case "liked":
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 p-3 md:p-1">
             <LikedSongs
               currentSong={currentSong}
               isPlaying={isPlaying}
@@ -181,7 +181,7 @@ export default function Home() {
         );
       case "search":
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-4 md:mt-1 ">
             <div className="relative">
               <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -206,7 +206,7 @@ export default function Home() {
         );
       case "library":
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-6 md:mt-1">
             <h2 className="text-2xl font-bold text-white">Your Library</h2>
             <SongList
               songs={songs}
@@ -219,7 +219,7 @@ export default function Home() {
         );
       default:
         return (
-          <div className="space-y-6">
+          <div className="space-y-6 mt-6  md:mt-0">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">Hello Buddy!</h2>
             </div>
@@ -243,18 +243,18 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex mt-6 md:mt-1">
       {/* Sidebar */}
       <Sidebar activeView={activeView} onViewChange={setActiveView} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6 pb-32 overflow-hidden">
+      <div className="flex-1 flex flex-col mt-8 md:mt-1 ">
+        <main className="flex-1 p-2 md:p-5 pb-32  overflow-hidden">
           {renderContent()}
         </main>
 
         {/* Music Player */}
-        <div className="relative">
+        <div className="relative ">
           <MusicPlayer
             isPlaying={isPlaying}
             setIsPlaying={setIsPlaying}

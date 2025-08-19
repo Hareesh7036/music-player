@@ -70,7 +70,7 @@ export default function SongList({
   return (
     <div className="bg-gray-900 text-white rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="grid grid-cols-12 gap-4 p-4 text-gray-400 text-sm font-medium border-b border-gray-700">
+      <div className="grid grid-cols-12 gap-6 p-4 text-gray-400 text-sm font-medium border-b border-gray-700">
         <div className="col-span-1">#</div>
         <div className="col-span-5">Title</div>
         <div className="col-span-2">Album</div>
@@ -165,13 +165,13 @@ export default function SongList({
 
               {/* Date Added */}
               <div className="col-span-2 flex items-center">
-                <span className="text-gray-400 text-sm">
+                <span className="text-gray-400 text-sm ">
                   {formatDate(song.createdAt)}
                 </span>
               </div>
 
               {/* Duration */}
-              <div className="col-span-1 flex items-center">
+              <div className="col-span-1 flex items-center p-3">
                 <span className="text-gray-400 text-sm">
                   {formatTime(song.duration)}
                 </span>
