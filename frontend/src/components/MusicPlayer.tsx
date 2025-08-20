@@ -390,7 +390,7 @@ export default function MusicPlayer({
             </button>
           </div>
       </div>
-      {/* Volume Control - Responsive */}
+      {/* Volume Control - Responsivenes */}
 <div className="hidden md:flex items-center space-x-2 justify-center md:float-right w-{200px} mx-10 p-2 ">
   <Volume2 size={20} className="text-gray-400 " />
   <input
