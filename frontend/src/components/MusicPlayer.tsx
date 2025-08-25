@@ -201,7 +201,7 @@ export default function MusicPlayer({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white  shadow-2xl">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white  shadow-2xl  ">
       <audio
         ref={audioRef}
         src={`${BACKEND_URL}${currentSong.filePath}`}
@@ -220,10 +220,10 @@ export default function MusicPlayer({
         }}
       />
 
-       <div className="max-w-6xl mx-auto flex sm:flex-row items-center  gap-4 p-2 sm:gap-6 px-10">
+       <div className="max-w-6xl mx-auto flex sm:flex-row items-center  gap-4 p-2 sm:gap-6 px-6">
   {/* Song Info */}
-<div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 flex-1 text-left px-3">
-  <div className="w-28 h-14 sm:w-20 p-0  bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
+<div className="flex flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6 flex-1 text-left px-0">
+  <div className="w-35 h-14 sm:w-20 p-0 mr-5 md:mr-0  bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden ">
       {currentSong.coverImage ? (
         <Image
           src={`${BACKEND_URL}${currentSong.coverImage}`}
@@ -262,7 +262,7 @@ export default function MusicPlayer({
 {/* Progress Bar */}
 <div className="w-full flex justify-center px-5 p-2">
   <div className="flex items-center gap-2 w-full max-w-xl px-5">
-    <span className="text-xs text-gray-400 min-w-[40px] text-right">
+    <span className="text-xs text-dark-400 min-w-[40px] text-right">
       {formatTime(currentTime)}
     </span>
 
@@ -272,10 +272,14 @@ export default function MusicPlayer({
       max="100"
       value={progress}
       onChange={handleSeek}
-      className="flex-1 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+      className="flex-1 h-1 appearance-none cursor-pointer rounded-lg 
+                 bg-tomato-900"
+      style={{
+        background: `linear-gradient(to right, #22c55e ${progress}%, #4b5563 ${progress}%)`,
+      }}
     />
 
-    <span className="text-xs text-gray-400 min-w-[40px] text-left">
+    <span className="text-xs text-green-500 min-w-[40px] text-left">
       {formatTime(currentSong.duration)}
     </span>
   </div>

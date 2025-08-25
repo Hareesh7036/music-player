@@ -243,44 +243,45 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex mt-6 md:mt-1">
-      {/* Sidebar */}
-      <Sidebar activeView={activeView} onViewChange={setActiveView} />
+  <div className="fixed h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex">
+    {/* Sidebar */}
+    <Sidebar activeView={activeView} onViewChange={setActiveView} />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col mt-8 md:mt-1 ">
-        <main className="flex-1 p-2 md:p-5 pb-32  overflow-hidden">
-          {renderContent()}
-        </main>
+    {/* Main Content */}
+    <div className="flex-1 flex flex-col mt-10 md:mt-0 ">
+      {/* Scrollable content */}
+      <main className="flex-1  p-2 md:p-5   overflow-y-auto scrollbar-none">
+        {renderContent()}
+      </main>
 
-        {/* Music Player */}
-        <div className="relative ">
-          <MusicPlayer
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
-            currentSong={currentSong}
-            playlist={songs}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            onSongEnd={handleSongEnd}
-            isFirstSong={
-              currentSong
-                ? songs.findIndex((s) => s._id === currentSong._id) === 0
-                : true
-            }
-            isLastSong={
-              currentSong
-                ? songs.findIndex((s) => s._id === currentSong._id) ===
-                  songs.length - 1
-                : true
-            }
-            repeatMode={repeatMode}
-            onRepeatModeChange={setRepeatMode}
-            shuffleMode={shuffleMode}
-            onShuffleModeChange={setShuffleMode}
-          />
-        </div>
+      {/* Fixed Music Player */}
+      <div className="sticky bottom-0 z-50 m-20 md:my-25">
+        <MusicPlayer
+          isPlaying={isPlaying}
+          setIsPlaying={setIsPlaying}
+          currentSong={currentSong}
+          playlist={songs}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          onSongEnd={handleSongEnd}
+          isFirstSong={
+            currentSong
+              ? songs.findIndex((s) => s._id === currentSong._id) === 0
+              : true
+          }
+          isLastSong={
+            currentSong
+              ? songs.findIndex((s) => s._id === currentSong._id) ===
+                songs.length - 1
+              : true
+          }
+          repeatMode={repeatMode}
+          onRepeatModeChange={setRepeatMode}
+          shuffleMode={shuffleMode}
+          onShuffleModeChange={setShuffleMode}
+        />
       </div>
     </div>
-  );
+  </div>
+);
 }

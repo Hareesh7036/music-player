@@ -68,7 +68,7 @@ export default function SongList({
   };
 
   return (
-    <div className="bg-gray-900 text-white rounded-lg overflow-hidden">
+    <div className="bg-gray-900 text-white rounded-lg overflow-hidden ">
       {/* Header */}
       <div className="grid grid-cols-12 gap-6 p-4 text-gray-400 text-sm font-medium border-b border-gray-700">
         <div className="col-span-1">#</div>
@@ -82,7 +82,7 @@ export default function SongList({
       </div>
 
       {/* Song List */}
-      <div className="max-h-96 overflow-y-auto scrollbar-none">
+      <div className="max-h-96 overflow-y-auto scrollbar-none  ">
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 
@@ -130,7 +130,7 @@ export default function SongList({
               </div>
 
               {/* Song Info */}
-              <div className="col-span-5 flex items-center space-x-3">
+              <div className="col-span-5 flex items-center space-x-3 ">
                 <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
