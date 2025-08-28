@@ -254,7 +254,7 @@ export default function Home() {
         {renderContent()}
       </main>
 
-      {/* Fixed Music Player */}
+      {/* Fixed Music player */}
       <div className="sticky bottom-0 z-50 m-20 md:my-25">
         <MusicPlayer
           isPlaying={isPlaying}
