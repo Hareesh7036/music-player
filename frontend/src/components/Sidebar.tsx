@@ -43,7 +43,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
 
   return (
     <>
-      {/* Top Bar (mobile Only) */}
+      {/* Top Bar (mobile only) */}
       <div className="flex items-center justify-between bg-black text-white px-5 py-4 fixed top-0 left-0 w-full z-50 md:hidden">
         <div className="flex items-center space-x-2">
           <Music className="text-green-500" size={28} />
