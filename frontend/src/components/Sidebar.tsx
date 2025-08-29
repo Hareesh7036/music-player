@@ -121,7 +121,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
             </ul>
           </div>
 
-          {/* Footer (sticks to bottom but scrolls on mobile if needed) */}
+          {/* Footer (sticks to bottom but Scrolls on mobile if needed) */}
           <div className="mt-auto border-t border-gray-800">
             <button
               onClick={() => {
