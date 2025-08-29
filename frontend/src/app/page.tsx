@@ -249,7 +249,7 @@ export default function Home() {
 
     {/* Main Content */}
     <div className="flex-1 flex flex-col mt-10 md:mt-0 ">
-      {/* Scrollable Content */}
+      {/* Scrollable content */}
       <main className="flex-1  p-2 md:p-5   overflow-y-auto scrollbar-none">
         {renderContent()}
       </main>

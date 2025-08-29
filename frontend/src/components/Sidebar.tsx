@@ -78,7 +78,7 @@ export default function Sidebar({ activeView, onViewChange }: SidebarProps) {
                     <button
                       onClick={() => {
                         onViewChange(item.id);
-                        setIsOpen(false); // auto close after click
+                        setIsOpen(false); // auto close after Click
                       }}
                       className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
                         activeView === item.id
