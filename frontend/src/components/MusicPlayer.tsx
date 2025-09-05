@@ -201,7 +201,7 @@ export default function MusicPlayer({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 shadow-2xl">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 shadow-2xl z-50">
       <audio
         ref={audioRef}
         src={`${BACKEND_URL}${currentSong.filePath}`}
@@ -220,9 +220,9 @@ export default function MusicPlayer({
         }}
       />
 
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <div className="max-w-6xl mx-auto items-center flex justify-between flex-col md:flex-row">
         {/* Song Info */}
-        <div className="flex items-center space-x-4 flex-1">
+        <div className="flex items-center space-x-4 flex-1 w-full md:w-fit justify-between">
           <div className="w-16 h-16 bg-gray-700 rounded-lg flex items-center justify-center overflow-hidden">
             {currentSong.coverImage ? (
               <Image
@@ -261,7 +261,7 @@ export default function MusicPlayer({
         </div>
 
         {/* Player Controls */}
-        <div className="flex flex-col items-center space-y-2 flex-2">
+        <div className="flex flex-col items-center space-y-2 flex-2 w-full md:w-fit">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => onShuffleModeChange(!shuffleMode)}
@@ -389,7 +389,7 @@ export default function MusicPlayer({
         </div>
 
         {/* Volume Control */}
-        <div className="flex items-center space-x-2 flex-1 justify-end">
+        <div className=" items-center space-x-2 flex-1 justify-end hidden md:flex">
           <Volume2 size={20} className="text-gray-400" />
           <input
             type="range"
