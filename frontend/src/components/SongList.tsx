@@ -49,53 +49,50 @@ export default function SongList({
 
   const handleLikeToggle = async (songId: string, event: React.MouseEvent) => {
     event.stopPropagation();
-
-    // Set loading state for this specific song
     setLikingStates((prev) => ({ ...prev, [songId]: true }));
 
     try {
-      const result = await toggleLike(songId);
-      if (!result.success) {
-        console.error("Failed to toggle like:", result.error);
-        // You could add a toast notification here
-      }
+      await toggleLike(songId);
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
-      // Remove loading state
       setLikingStates((prev) => ({ ...prev, [songId]: false }));
     }
   };
 
   return (
-    <div className="bg-gray-900 text-white rounded-lg overflow-hidden ">
+    <div className="bg-gray-900 text-white rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="grid grid-cols-12 gap-6 p-4 text-gray-400 text-sm font-medium border-b border-gray-700">
-        <div className="col-span-1">#</div>
-        <div className="col-span-5">Title</div>
-        <div className="col-span-2">Album</div>
-        <div className="col-span-2">Date Added</div>
-        <div className="col-span-1">
+      <div className="
+        grid grid-cols-7 md:grid-cols-9 lg:grid-cols-12
+        gap-4 p-4 text-gray-400 text-sm font-medium border-b border-gray-700
+      ">
+        <div>#</div>
+        <div className="col-span-4">Title</div>
+        <div className="hidden md:block md:col-span-2">Album</div>
+        <div className="hidden lg:block lg:col-span-2">Date Added</div>
+        <div className="hidden lg:block">
           <Clock size={16} />
         </div>
-        <div className="col-span-1"></div>
+        <div></div>
       </div>
 
       {/* Song List */}
-      <div className="max-h-[420px] overflow-y-auto scrollbar-none  ">
+      <div className="max-h-[420px] overflow-y-auto scrollbar-none">
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 
           return (
             <div
               key={song._id}
-              className={`grid grid-cols-12 gap-4 p-3 hover:bg-gray-800 transition-colors group cursor-pointer ${
-                isCurrentSong ? "bg-gray-800" : ""
-              }`}
+              className="
+                grid grid-cols-7 md:grid-cols-9 lg:grid-cols-12
+                gap-4 p-3 hover:bg-gray-800 transition-colors group cursor-pointer
+              "
               onClick={() => onSongSelect(song)}
             >
               {/* Track Number / Play Button */}
-              <div className="col-span-1 flex items-center">
+              <div className="flex items-center">
                 {isCurrentSong && isPlaying ? (
                   <button
                     onClick={(e) => {
@@ -130,16 +127,20 @@ export default function SongList({
               </div>
 
               {/* Song Info */}
-              <div className="col-span-5 flex items-center space-x-3 ">
-                <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
+              <div className="col-span-4 flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gray-700 rounded overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
                       src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${song.coverImage}`}
                       alt={song.title}
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="text-gray-500 text-xs">♪</div>
+                    <div className="text-gray-500 text-xs flex justify-center items-center h-full">
+                      ♪
+                    </div>
                   )}
                 </div>
                 <div className="min-w-0">
@@ -157,28 +158,28 @@ export default function SongList({
               </div>
 
               {/* Album */}
-              <div className="col-span-2 flex items-center">
+              <div className="hidden md:flex md:col-span-2 items-center">
                 <span className="text-gray-400 text-sm truncate">
                   {song.album || "Unknown Album"}
                 </span>
               </div>
 
               {/* Date Added */}
-              <div className="col-span-2 flex items-center">
-                <span className="text-gray-400 text-sm ">
+              <div className="hidden lg:flex lg:col-span-2 items-center">
+                <span className="text-gray-400 text-sm">
                   {formatDate(song.createdAt)}
                 </span>
               </div>
 
               {/* Duration */}
-              <div className="col-span-1 flex items-center p-3">
+              <div className="hidden lg:flex items-center">
                 <span className="text-gray-400 text-sm">
                   {formatTime(song.duration)}
                 </span>
               </div>
 
               {/* Actions */}
-              <div className="col-span-1 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   className={`p-1 transition-colors ${
                     isLiked(song._id)
@@ -191,11 +192,6 @@ export default function SongList({
                   }`}
                   onClick={(e) => handleLikeToggle(song._id, e)}
                   disabled={likingStates[song._id]}
-                  title={
-                    isLiked(song._id)
-                      ? "Remove from favorites"
-                      : "Add to favorites"
-                  }
                 >
                   <Heart
                     size={16}
