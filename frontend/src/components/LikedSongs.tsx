@@ -166,7 +166,7 @@ export default function LikedSongs({
       )}
 
       {/* Song List */}
-      <div className="max-h-96 overflow-y-auto">
+      <div className="max-h-[420px] overflow-y-auto">
         {likedSongs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 

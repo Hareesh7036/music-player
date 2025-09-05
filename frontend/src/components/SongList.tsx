@@ -82,7 +82,7 @@ export default function SongList({
       </div>
 
       {/* Song List */}
-      <div className="max-h-96 overflow-y-auto scrollbar-none  ">
+      <div className="max-h-[420px] overflow-y-auto scrollbar-none  ">
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 

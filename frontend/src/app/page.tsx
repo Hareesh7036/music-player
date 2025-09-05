@@ -170,7 +170,7 @@ export default function Home() {
     switch (activeView) {
       case "liked":
         return (
-          <div className="space-y-6 p-3 md:p-1">
+          <div className="space-y-6">
             <LikedSongs
               currentSong={currentSong}
               isPlaying={isPlaying}
@@ -181,7 +181,7 @@ export default function Home() {
         );
       case "search":
         return (
-          <div className="space-y-6 mt-4 md:mt-1 ">
+          <div className="space-y-6">
             <div className="relative">
               <Search
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -206,7 +206,7 @@ export default function Home() {
         );
       case "library":
         return (
-          <div className="space-y-6 mt-6 md:mt-1">
+          <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">Your Library</h2>
             <SongList
               songs={songs}
@@ -219,7 +219,7 @@ export default function Home() {
         );
       default:
         return (
-          <div className="space-y-6 mt-6  md:mt-0">
+          <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">Hello Buddy!</h2>
             </div>
@@ -243,45 +243,44 @@ export default function Home() {
   };
 
   return (
-  <div className="fixed h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex">
-    {/* Sidebar */}
-    <Sidebar activeView={activeView} onViewChange={setActiveView} />
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex">
+      {/* Sidebar */}
+      <Sidebar activeView={activeView} onViewChange={setActiveView} />
 
-    {/* Main Content */}
-    <div className="flex-1 flex flex-col mt-10 md:mt-0 ">
-      {/* Scrollable content */}
-      <main className="flex-1  p-2 md:p-5   overflow-y-auto scrollbar-none">
-        {renderContent()}
-      </main>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        <main className="flex-1 p-6 pb-32 overflow-hidden">
+          {renderContent()}
+        </main>
 
-      {/* Fixed Music Player */}
-      <div className="sticky bottom-0 z-50 m-20 md:my-25">
-        <MusicPlayer
-          isPlaying={isPlaying}
-          setIsPlaying={setIsPlaying}
-          currentSong={currentSong}
-          playlist={songs}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          onSongEnd={handleSongEnd}
-          isFirstSong={
-            currentSong
-              ? songs.findIndex((s) => s._id === currentSong._id) === 0
-              : true
-          }
-          isLastSong={
-            currentSong
-              ? songs.findIndex((s) => s._id === currentSong._id) ===
-                songs.length - 1
-              : true
-          }
-          repeatMode={repeatMode}
-          onRepeatModeChange={setRepeatMode}
-          shuffleMode={shuffleMode}
-          onShuffleModeChange={setShuffleMode}
-        />
+        {/* Music Player */}
+        <div className="relative">
+          <MusicPlayer
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
+            currentSong={currentSong}
+            playlist={songs}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+            onSongEnd={handleSongEnd}
+            isFirstSong={
+              currentSong
+                ? songs.findIndex((s) => s._id === currentSong._id) === 0
+                : true
+            }
+            isLastSong={
+              currentSong
+                ? songs.findIndex((s) => s._id === currentSong._id) ===
+                  songs.length - 1
+                : true
+            }
+            repeatMode={repeatMode}
+            onRepeatModeChange={setRepeatMode}
+            shuffleMode={shuffleMode}
+            onShuffleModeChange={setShuffleMode}
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
