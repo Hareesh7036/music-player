@@ -52,33 +52,45 @@ export default function SongList({
     setLikingStates((prev) => ({ ...prev, [songId]: true }));
 
     try {
-      await toggleLike(songId);
+      const result = await toggleLike(songId);
+      if (!result.success) {
+        console.error("Failed to toggle like:", result.error);
+        // You could add a toast notification here
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
+      // Remove loading state
       setLikingStates((prev) => ({ ...prev, [songId]: false }));
     }
   };
 
   return (
-    <div className="bg-gray-900 text-white rounded-lg overflow-hidden">
+    <div className="bg-gray-900 text-white rounded-lg overflow-hidden ">
       {/* Header */}
-      <div className="
-        grid grid-cols-7 md:grid-cols-9 lg:grid-cols-12
-        gap-4 p-4 text-gray-400 text-sm font-medium border-b border-gray-700
-      ">
+      <div
+        className="
+          grid 
+          grid-cols-6 sm:grid-cols-8 md:grid-cols-9 lg:grid-cols-12
+          gap-4 p-4 text-gray-400 text-sm font-medium border-b border-gray-700
+        "
+      >
         <div>#</div>
-        <div className="col-span-4">Title</div>
+        <div className="col-span-4 sm:col-span-3">Title</div>
         <div className="hidden md:block md:col-span-2">Album</div>
         <div className="hidden lg:block lg:col-span-2">Date Added</div>
         <div className="hidden lg:block">
           <Clock size={16} />
         </div>
-        <div></div>
+        <div className="text-center sm:text-left md:text-center">❤️</div>
       </div>
 
-      {/* Song List */}
-      <div className="max-h-[420px] overflow-y-auto scrollbar-none">
+      {/* Song List - Responsive Height */}
+      <div
+        className="overflow-y-auto scrollbar-none transition-all duration-300
+    h-[calc(85vh-260px)] sm:h-[calc(90vh-220px)]
+"
+      >
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 
@@ -86,8 +98,10 @@ export default function SongList({
             <div
               key={song._id}
               className="
-                grid grid-cols-7 md:grid-cols-9 lg:grid-cols-12
-                gap-4 p-3 hover:bg-gray-800 transition-colors group cursor-pointer
+                group
+                grid 
+                grid-cols-6 sm:grid-cols-8 md:grid-cols-9 lg:grid-cols-12
+                gap-4 p-3 hover:bg-gray-800 transition-colors cursor-pointer
               "
               onClick={() => onSongSelect(song)}
             >
@@ -127,7 +141,7 @@ export default function SongList({
               </div>
 
               {/* Song Info */}
-              <div className="col-span-4 flex items-center space-x-3">
+              <div className="col-span-4 sm:col-span-3 flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-700 rounded overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
@@ -145,9 +159,8 @@ export default function SongList({
                 </div>
                 <div className="min-w-0">
                   <h4
-                    className={`font-medium truncate ${
-                      isCurrentSong ? "text-green-500" : "text-white"
-                    }`}
+                    className={`font-medium truncate ${isCurrentSong ? "text-green-500" : "text-white"
+                      }`}
                   >
                     {song.title}
                   </h4>
@@ -178,26 +191,31 @@ export default function SongList({
                 </span>
               </div>
 
-              {/* Actions */}
-              <div className="flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+              {/* Heart */}
+              <div className="col-span-1 flex items-center justify-center">
                 <button
-                  className={`p-1 transition-colors ${
-                    isLiked(song._id)
-                      ? "text-red-500 hover:text-red-400"
+                  className={`p-1 transition-colors ${isLiked(song._id)
+                      ? "text-red-500"
                       : "text-gray-400 hover:text-white"
-                  } ${
-                    likingStates[song._id]
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
+                    } ${likingStates[song._id] ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                   onClick={(e) => handleLikeToggle(song._id, e)}
                   disabled={likingStates[song._id]}
+                  title={
+                    isLiked(song._id)
+                      ? "Remove from favorites"
+                      : "Add to favorites"
+                  }
                 >
                   <Heart
                     size={16}
                     fill={isLiked(song._id) ? "currentColor" : "none"}
                   />
                 </button>
+              </div>
+
+              {/* More Options */}
+              <div className="hidden sm:flex items-center justify-end">
                 <button className="text-gray-400 hover:text-white p-1">
                   <MoreHorizontal size={16} />
                 </button>
