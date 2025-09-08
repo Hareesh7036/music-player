@@ -225,7 +225,7 @@ export default function Home() {
             </div>
 
             {loading ? (
-              <div className="flex items-center justify-center h-64">
+              <div className="flex items-center justify-center h-60 ">
                 <div className="text-white text-lg">Loading songs...</div>
               </div>
             ) : (
@@ -243,13 +243,13 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex ">
       {/* Sidebar */}
       <Sidebar activeView={activeView} onViewChange={setActiveView} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6 pb-32 overflow-hidden">
+      <div className="flex-1 flex flex-col mt-14 md:mt-0 ">
+        <main className="flex-1 p-4 pb-32 overflow-hidden">
           {renderContent()}
         </main>
 
