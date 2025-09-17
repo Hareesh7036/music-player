@@ -57,10 +57,12 @@ export default function SongList({
       const result = await toggleLike(songId);
       if (!result.success) {
         console.error("Failed to toggle like:", result.error);
+        // You could add a toast notification here
       }
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
+      // Remove loading state
       setLikingStates((prev) => ({ ...prev, [songId]: false }));
     }
   };
@@ -94,16 +96,16 @@ export default function SongList({
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 
-          return (
+         return (
             <div
               key={song._id}
-              className="
-                group grid grid-cols-12
-                gap-4 p-3 hover:bg-gray-800 transition-colors cursor-pointer
-              "
+              className={`group grid grid-cols-12
+                gap-4 p-3 hover:bg-gray-800 transition-colors cursor-pointer ${
+                isCurrentSong ? "bg-gray-800" : ""
+              }`}
               onClick={() => onSongSelect(song)}
             >
-              {/* Play Button / Track Number */}
+              {/* Track Number / Play Button */}
               <div className="flex items-center">
                 {isCurrentSong && isPlaying ? (
                   <button
@@ -190,7 +192,7 @@ export default function SongList({
                 </span>
               </div>
 
-              {/* Heart */}
+              {/* Action */}
               <div className="col-span-2 sm:col-span-1 flex items-center justify-center">
                 <button
                   className={`p-1 transition-colors ${
