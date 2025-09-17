@@ -49,47 +49,47 @@ export default function SongList({
 
   const handleLikeToggle = async (songId: string, event: React.MouseEvent) => {
     event.stopPropagation();
+
+    // Set loading state for this specific song
     setLikingStates((prev) => ({ ...prev, [songId]: true }));
 
     try {
       const result = await toggleLike(songId);
       if (!result.success) {
         console.error("Failed to toggle like:", result.error);
-        // You could add a toast notification here
       }
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
-      // Remove loading state
       setLikingStates((prev) => ({ ...prev, [songId]: false }));
     }
   };
 
   return (
-    <div className="bg-gray-900 text-white rounded-lg overflow-hidden ">
+    <div className="bg-gray-900 text-white rounded-lg overflow-hidden">
       {/* Header */}
       <div
         className="
-          grid 
-          grid-cols-6 sm:grid-cols-8 md:grid-cols-9 lg:grid-cols-12
+          grid grid-cols-12
           gap-4 p-4 text-gray-400 text-sm font-medium border-b border-gray-700
         "
       >
         <div>#</div>
-        <div className="col-span-4 sm:col-span-3">Title</div>
-        <div className="hidden md:block md:col-span-2">Album</div>
-        <div className="hidden lg:block lg:col-span-2">Date Added</div>
+        <div className="col-span-9 sm:col-span-4">Title</div>
+        <div className="hidden md:block col-span-2">Album</div>
+        <div className="hidden lg:block col-span-2">Date Added</div>
         <div className="hidden lg:block">
           <Clock size={16} />
         </div>
-        <div className="text-center sm:text-left md:text-center">❤️</div>
+        <div className="col-span-2 sm:col-span-1 text-center">❤️</div>
+        <div className="hidden sm:block col-span-1 text-right">⋮</div>
       </div>
 
-      {/* Song List - Responsive Height */}
+      {/* Song List */}
       <div
         className="overflow-y-auto scrollbar-none transition-all duration-300
-    h-[calc(85vh-260px)] sm:h-[calc(90vh-220px)]
-"
+          h-[calc(85vh-260px)] sm:h-[calc(90vh-220px)]
+        "
       >
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
@@ -98,14 +98,12 @@ export default function SongList({
             <div
               key={song._id}
               className="
-                group
-                grid 
-                grid-cols-6 sm:grid-cols-8 md:grid-cols-9 lg:grid-cols-12
+                group grid grid-cols-12
                 gap-4 p-3 hover:bg-gray-800 transition-colors cursor-pointer
               "
               onClick={() => onSongSelect(song)}
             >
-              {/* Track Number / Play Button */}
+              {/* Play Button / Track Number */}
               <div className="flex items-center">
                 {isCurrentSong && isPlaying ? (
                   <button
@@ -141,7 +139,7 @@ export default function SongList({
               </div>
 
               {/* Song Info */}
-              <div className="col-span-4 sm:col-span-3 flex items-center space-x-3">
+              <div className="col-span-9 sm:col-span-4 flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-700 rounded overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
@@ -159,8 +157,9 @@ export default function SongList({
                 </div>
                 <div className="min-w-0">
                   <h4
-                    className={`font-medium truncate ${isCurrentSong ? "text-green-500" : "text-white"
-                      }`}
+                    className={`font-medium truncate ${
+                      isCurrentSong ? "text-green-500" : "text-white"
+                    }`}
                   >
                     {song.title}
                   </h4>
@@ -171,14 +170,14 @@ export default function SongList({
               </div>
 
               {/* Album */}
-              <div className="hidden md:flex md:col-span-2 items-center">
+              <div className="hidden md:flex col-span-2 items-center">
                 <span className="text-gray-400 text-sm truncate">
                   {song.album || "Unknown Album"}
                 </span>
               </div>
 
               {/* Date Added */}
-              <div className="hidden lg:flex lg:col-span-2 items-center">
+              <div className="hidden lg:flex col-span-2 items-center">
                 <span className="text-gray-400 text-sm">
                   {formatDate(song.createdAt)}
                 </span>
@@ -192,13 +191,15 @@ export default function SongList({
               </div>
 
               {/* Heart */}
-              <div className="col-span-1 flex items-center justify-center">
+              <div className="col-span-2 sm:col-span-1 flex items-center justify-center">
                 <button
-                  className={`p-1 transition-colors ${isLiked(song._id)
+                  className={`p-1 transition-colors ${
+                    isLiked(song._id)
                       ? "text-red-500"
                       : "text-gray-400 hover:text-white"
-                    } ${likingStates[song._id] ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                  } ${
+                    likingStates[song._id] ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   onClick={(e) => handleLikeToggle(song._id, e)}
                   disabled={likingStates[song._id]}
                   title={
@@ -215,7 +216,7 @@ export default function SongList({
               </div>
 
               {/* More Options */}
-              <div className="hidden sm:flex items-center justify-end">
+              <div className="hidden sm:flex col-span-1 items-center justify-end">
                 <button className="text-gray-400 hover:text-white p-1">
                   <MoreHorizontal size={16} />
                 </button>
@@ -224,7 +225,6 @@ export default function SongList({
           );
         })}
       </div>
-
       {songs.length === 0 && (
         <div className="p-8 text-center text-gray-400">
           <div className="text-4xl mb-4">🎵</div>
