@@ -77,32 +77,30 @@ export default function SongList({
         "
       >
         <div>#</div>
-        <div className="col-span-9 sm:col-span-4">Title</div>
+        <div className="col-span-9 md:col-span-7 lg:col-span-4">Title</div>
         <div className="hidden md:block col-span-2">Album</div>
         <div className="hidden lg:block col-span-2">Date Added</div>
         <div className="hidden lg:block">
           <Clock size={16} />
         </div>
-        <div className="col-span-2 sm:col-span-1 text-center">❤️</div>
-        <div className="hidden sm:block col-span-1 text-right">⋮</div>
       </div>
 
       {/* Song List */}
       <div
         className="overflow-y-auto scrollbar-none transition-all duration-300
-          h-[calc(85vh-260px)] sm:h-[calc(90vh-220px)]
+          h-[calc(85vh-330px)] sm:h-[calc(90vh-220px)]
         "
       >
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 
-         return (
+          return (
             <div
               key={song._id}
               className={`group grid grid-cols-12
                 gap-4 p-3 hover:bg-gray-800 transition-colors cursor-pointer ${
-                isCurrentSong ? "bg-gray-800" : ""
-              }`}
+                  isCurrentSong ? "bg-gray-800" : ""
+                }`}
               onClick={() => onSongSelect(song)}
             >
               {/* Track Number / Play Button */}
@@ -141,7 +139,7 @@ export default function SongList({
               </div>
 
               {/* Song Info */}
-              <div className="col-span-9 sm:col-span-4 flex items-center space-x-3">
+              <div className="col-span-9  md:col-span-7 lg:col-span-4 flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-700 rounded overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
@@ -200,7 +198,9 @@ export default function SongList({
                       ? "text-red-500"
                       : "text-gray-400 hover:text-white"
                   } ${
-                    likingStates[song._id] ? "opacity-50 cursor-not-allowed" : ""
+                    likingStates[song._id]
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
                   }`}
                   onClick={(e) => handleLikeToggle(song._id, e)}
                   disabled={likingStates[song._id]}
@@ -218,7 +218,7 @@ export default function SongList({
               </div>
 
               {/* More Options */}
-              <div className="hidden sm:flex col-span-1 items-center justify-end">
+              <div className="hidden lg:flex col-span-1 items-center justify-end">
                 <button className="text-gray-400 hover:text-white p-1">
                   <MoreHorizontal size={16} />
                 </button>
