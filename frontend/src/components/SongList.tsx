@@ -68,34 +68,43 @@ export default function SongList({
   };
 
   return (
-    <div className="bg-gray-900 text-white rounded-lg overflow-hidden ">
+    <div className="bg-gray-900 text-white rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="grid grid-cols-12 gap-6 p-4 text-gray-400 text-sm font-medium border-b border-gray-700">
-        <div className="col-span-1">#</div>
-        <div className="col-span-5">Title</div>
-        <div className="col-span-2">Album</div>
-        <div className="col-span-2">Date Added</div>
-        <div className="col-span-1">
+      <div
+        className="
+          grid grid-cols-12
+          gap-4 p-4 text-gray-400 text-sm font-medium border-b border-gray-700
+        "
+      >
+        <div>#</div>
+        <div className="col-span-9 md:col-span-7 lg:col-span-4">Title</div>
+        <div className="hidden md:block col-span-2">Album</div>
+        <div className="hidden lg:block col-span-2">Date Added</div>
+        <div className="hidden lg:block">
           <Clock size={16} />
         </div>
-        <div className="col-span-1"></div>
       </div>
 
       {/* Song List */}
-      <div className="max-h-[420px] overflow-y-auto scrollbar-none  ">
+      <div
+        className="overflow-y-auto scrollbar-none transition-all duration-300
+          h-[calc(85vh-330px)] sm:h-[calc(90vh-220px)]
+        "
+      >
         {songs.map((song, index) => {
           const isCurrentSong = currentSong?._id === song._id;
 
           return (
             <div
               key={song._id}
-              className={`grid grid-cols-12 gap-4 p-3 hover:bg-gray-800 transition-colors group cursor-pointer ${
-                isCurrentSong ? "bg-gray-800" : ""
-              }`}
+              className={`group grid grid-cols-12
+                gap-4 p-3 hover:bg-gray-800 transition-colors cursor-pointer ${
+                  isCurrentSong ? "bg-gray-800" : ""
+                }`}
               onClick={() => onSongSelect(song)}
             >
               {/* Track Number / Play Button */}
-              <div className="col-span-1 flex items-center">
+              <div className="flex items-center">
                 {isCurrentSong && isPlaying ? (
                   <button
                     onClick={(e) => {
@@ -130,16 +139,20 @@ export default function SongList({
               </div>
 
               {/* Song Info */}
-              <div className="col-span-5 flex items-center space-x-3 ">
-                <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
+              <div className="col-span-9  md:col-span-7 lg:col-span-4 flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gray-700 rounded overflow-hidden flex-shrink-0">
                   {song.coverImage ? (
                     <Image
                       src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${song.coverImage}`}
                       alt={song.title}
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="text-gray-500 text-xs">♪</div>
+                    <div className="text-gray-500 text-xs flex justify-center items-center h-full">
+                      ♪
+                    </div>
                   )}
                 </div>
                 <div className="min-w-0">
@@ -157,32 +170,32 @@ export default function SongList({
               </div>
 
               {/* Album */}
-              <div className="col-span-2 flex items-center">
+              <div className="hidden md:flex col-span-2 items-center">
                 <span className="text-gray-400 text-sm truncate">
                   {song.album || "Unknown Album"}
                 </span>
               </div>
 
               {/* Date Added */}
-              <div className="col-span-2 flex items-center">
-                <span className="text-gray-400 text-sm ">
+              <div className="hidden lg:flex col-span-2 items-center">
+                <span className="text-gray-400 text-sm">
                   {formatDate(song.createdAt)}
                 </span>
               </div>
 
               {/* Duration */}
-              <div className="col-span-1 flex items-center p-3">
+              <div className="hidden lg:flex items-center">
                 <span className="text-gray-400 text-sm">
                   {formatTime(song.duration)}
                 </span>
               </div>
 
-              {/* Actions */}
-              <div className="col-span-1 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+              {/* Action */}
+              <div className="col-span-2 sm:col-span-1 flex items-center justify-center">
                 <button
                   className={`p-1 transition-colors ${
                     isLiked(song._id)
-                      ? "text-red-500 hover:text-red-400"
+                      ? "text-red-500"
                       : "text-gray-400 hover:text-white"
                   } ${
                     likingStates[song._id]
@@ -202,6 +215,10 @@ export default function SongList({
                     fill={isLiked(song._id) ? "currentColor" : "none"}
                   />
                 </button>
+              </div>
+
+              {/* More Options */}
+              <div className="hidden lg:flex col-span-1 items-center justify-end">
                 <button className="text-gray-400 hover:text-white p-1">
                   <MoreHorizontal size={16} />
                 </button>
@@ -210,7 +227,6 @@ export default function SongList({
           );
         })}
       </div>
-
       {songs.length === 0 && (
         <div className="p-8 text-center text-gray-400">
           <div className="text-4xl mb-4">🎵</div>
